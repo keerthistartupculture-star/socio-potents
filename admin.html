@@ -1,0 +1,1326 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | Socio Potents</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <style>
+    :root {
+      --gold: #d2b356;
+      --gold-dk: #a9843a;
+      --ink: #1a1a1a;
+      --charcoal: #333;
+      --muted: #6b6b6b;
+      --bg: #f4f6f9;
+      --card: #fff;
+      --border: #e4dfd2;
+      --sidebar: #1a1a1a;
+      --sidebar-w: 240px;
+      --navy: #1f3a5f;
+      --navy-bg: #e9eef4;
+      --forest: #2f5233;
+      --forest-bg: #e9f0e8;
+      --amber: #8a6d21;
+      --amber-bg: #f6efdd;
+      --maroon: #7a2e2e;
+      --maroon-bg: #f5e8e6;
+      --serif: Georgia, "Times New Roman", serif;
+      --sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      --radius: 10px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      height: 100%;
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--ink);
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: var(--sidebar-w);
+      height: 100vh;
+      background: var(--sidebar);
+      display: flex;
+      flex-direction: column;
+      z-index: 200;
+    }
+
+    .sb-logo {
+      padding: 1.5rem 1.25rem 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, .08);
+    }
+
+    .sb-logo img {
+      height: 38px;
+      width: auto;
+      display: block;
+      margin-bottom: .5rem;
+    }
+
+    .sb-logo .sb-brand {
+      font-family: var(--serif);
+      font-size: 13px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 700;
+    }
+
+    .sb-logo .sb-sub {
+      font-size: 10.5px;
+      color: rgba(255, 255, 255, .4);
+      margin-top: 2px;
+    }
+
+    .sb-nav {
+      flex: 1;
+      padding: 1rem 0;
+    }
+
+    .sb-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 1.25rem;
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, .6);
+      cursor: pointer;
+      border-left: 3px solid transparent;
+      transition: all .15s;
+      text-decoration: none;
+    }
+
+    .sb-item:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, .05);
+    }
+
+    .sb-item.active {
+      color: var(--gold);
+      border-left-color: var(--gold);
+      background: rgba(210, 179, 86, .08);
+    }
+
+    .sb-item svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      opacity: .7;
+    }
+
+    .sb-item.active svg {
+      opacity: 1;
+    }
+
+    .sb-footer {
+      padding: 1rem 1.25rem;
+      border-top: 1px solid rgba(255, 255, 255, .08);
+    }
+
+    .sb-logout {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, .45);
+      cursor: pointer;
+      background: none;
+      border: none;
+      width: 100%;
+      padding: 8px 0;
+    }
+
+    .sb-logout:hover {
+      color: #fff;
+    }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      position: fixed;
+      top: 0;
+      left: var(--sidebar-w);
+      right: 0;
+      height: 60px;
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.75rem;
+      z-index: 100;
+    }
+
+    .topbar-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .topbar-badge {
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 5px 14px;
+      border-radius: 20px;
+      background: var(--navy-bg);
+      color: var(--navy);
+    }
+
+    .topbar-refresh {
+      font-family: var(--sans);
+      font-size: 12.5px;
+      font-weight: 700;
+      padding: 7px 16px;
+      border-radius: 6px;
+      border: 1.5px solid var(--border);
+      background: var(--card);
+      color: var(--charcoal);
+      cursor: pointer;
+    }
+
+    .topbar-refresh:hover {
+      border-color: var(--gold-dk);
+      color: var(--gold-dk);
+    }
+
+    /* ── MAIN ── */
+    .main {
+      margin-left: var(--sidebar-w);
+      padding-top: 60px;
+      min-height: 100vh;
+    }
+
+    .main-inner {
+      padding: 1.75rem 1.75rem 3rem;
+    }
+
+    /* ── STAT CARDS ── */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.1rem 1.3rem;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .stat-card .sc-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: .4rem;
+    }
+
+    .stat-card .sc-num {
+      font-family: var(--serif);
+      font-size: 28px;
+      line-height: 1;
+      color: var(--ink);
+    }
+
+    .stat-card .sc-lbl {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--muted);
+    }
+
+    .stat-card .sc-sub {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    /* ── TABLE CARD ── */
+    .tcard {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .tcard-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tcard-head h2 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .tcard-head span {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th {
+      background: #fafaf8;
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--muted);
+      padding: 10px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    td {
+      padding: 11px 14px;
+      font-size: 13px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr.rowlink {
+      cursor: pointer;
+    }
+
+    tr.rowlink:hover td {
+      background: #faf8f3;
+    }
+
+    .pill {
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+
+    .emptystate {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--muted);
+      font-size: 13.5px;
+    }
+
+    /* ── MODAL ── */
+    #modalbg {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .5);
+      z-index: 500;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    #modalbg.open {
+      display: flex;
+    }
+
+    .modal {
+      background: #fff;
+      border-radius: 14px;
+      width: 100%;
+      max-width: 660px;
+      max-height: 90vh;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-header {
+      padding: 1.5rem 1.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      position: sticky;
+      top: 0;
+      background: #fff;
+      z-index: 2;
+    }
+
+    .modal-header-left h2 {
+      font-family: var(--serif);
+      font-size: 20px;
+      color: var(--ink);
+      margin-bottom: 2px;
+    }
+
+    .modal-header-left .msub {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--muted);
+      padding: 4px;
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .modal-close:hover {
+      color: var(--ink);
+    }
+
+    .modal-body {
+      padding: 1.25rem 1.75rem;
+    }
+
+    .mrow {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 9px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 13.5px;
+    }
+
+    .mrow:last-of-type {
+      border: none;
+    }
+
+    .mrow .mlbl {
+      color: var(--muted);
+      font-size: 12.5px;
+      white-space: nowrap;
+    }
+
+    .mrow .mval {
+      text-align: right;
+      color: var(--ink);
+      font-weight: 600;
+    }
+
+    .mbadge {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 20px;
+      background: var(--navy-bg);
+      color: var(--navy);
+    }
+
+    .modal-section {
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      color: var(--gold-dk);
+      margin: 1.1rem 0 .5rem;
+    }
+
+    .modal-footer {
+      padding: 1rem 1.75rem 1.5rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      position: sticky;
+      bottom: 0;
+      background: #fff;
+    }
+
+    .btn {
+      font-family: var(--sans);
+      font-size: 13px;
+      font-weight: 700;
+      padding: 9px 20px;
+      border-radius: 6px;
+      border: 1.5px solid var(--ink);
+      background: #fff;
+      color: var(--ink);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn:hover {
+      background: var(--ink);
+      color: #fff;
+    }
+
+    .btn-gold {
+      background: var(--ink);
+      color: #fff;
+      border-color: var(--ink);
+    }
+
+    .btn-gold:hover {
+      background: var(--gold-dk);
+      border-color: var(--gold-dk);
+    }
+
+    .btn-red {
+      border-color: #7a2e2e;
+      color: #7a2e2e;
+      background: #fff;
+    }
+
+    .btn-red:hover {
+      background: #7a2e2e;
+      color: #fff;
+    }
+
+    /* ── LOGIN ── */
+    #gate {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: var(--sidebar);
+      padding: 2rem;
+    }
+
+    .gate-card {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 2.5rem;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, .18);
+    }
+
+    .gate-logo {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 1.75rem;
+    }
+
+    .gate-logo img {
+      height: 52px;
+      margin-bottom: .6rem;
+    }
+
+    .gate-logo .gl-brand {
+      font-family: var(--serif);
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .gate-logo .gl-sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .gate-card h2 {
+      font-family: var(--serif);
+      font-size: 20px;
+      margin-bottom: .3rem;
+    }
+
+    .gate-card p {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 1.25rem;
+    }
+
+    .gate-card input {
+      width: 100%;
+      font-size: 14px;
+      border: 1.5px solid #dcd6c8;
+      border-radius: 8px;
+      padding: 11px 14px;
+      outline: none;
+      margin-bottom: .75rem;
+      font-family: var(--sans);
+    }
+
+    .gate-card input:focus {
+      border-color: var(--gold-dk);
+    }
+
+    .gate-card .login-btn {
+      width: 100%;
+      font-family: var(--sans);
+      font-size: 14.5px;
+      font-weight: 700;
+      padding: 13px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      background: var(--ink);
+      color: #fff;
+    }
+
+    .gate-card .login-btn:hover {
+      background: var(--gold-dk);
+    }
+
+    .gate-err {
+      font-size: 12.5px;
+      color: #7a2e2e;
+      margin-top: .6rem;
+      min-height: 16px;
+    }
+
+    /* hidden report clone for PDF rendering */
+    #pdf-stage {
+      position: fixed;
+      left: -9999px;
+      top: 0;
+      width: 794px;
+      background: #f7f5f0;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    /* ── CHARTS ── */
+    .chart-bar-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .chart-bar-row {
+      display: grid;
+      grid-template-columns: 130px 1fr 44px;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .chart-bar-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--charcoal);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .chart-bar-track {
+      height: 26px;
+      background: #f0ece3;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .chart-bar-fill {
+      height: 100%;
+      border-radius: 6px;
+      transition: width .65s cubic-bezier(.4, 0, .2, 1);
+      display: flex;
+      align-items: center;
+      padding-left: 10px;
+      min-width: 2px;
+    }
+
+    .chart-bar-fill span {
+      font-size: 11px;
+      font-weight: 700;
+      color: #fff;
+      white-space: nowrap;
+    }
+
+    .chart-bar-count {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      text-align: right;
+    }
+
+    .chart-empty {
+      font-size: 13px;
+      color: var(--muted);
+      padding: 1.5rem 0;
+      text-align: center;
+    }
+
+    .donut-legend {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .donut-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12.5px;
+    }
+
+    .donut-legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+
+    .donut-legend-label {
+      color: var(--charcoal);
+      font-weight: 600;
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .donut-legend-val {
+      color: var(--muted);
+      font-size: 11.5px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ══ LOGIN GATE ══ -->
+  <div id="gate">
+    <div class="gate-card">
+      <div class="gate-logo">
+        <img src="images/SP%20logo%20footer.png" alt="Socio Potents Logo">
+        <span class="gl-brand">Socio Potents</span>
+        <span class="gl-sub">Assessment Admin Portal</span>
+      </div>
+      <h2>Welcome back</h2>
+      <p>Enter your admin password to access the dashboard.</p>
+      <input type="password" id="pw" placeholder="Admin password" onkeydown="if(event.key==='Enter')login()">
+      <button class="login-btn" onclick="login()">Log In</button>
+      <div class="gate-err" id="gateerr"></div>
+    </div>
+  </div>
+
+  <!-- ══ DASHBOARD ══ -->
+  <div id="dash" style="display:none;">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sb-logo">
+        <img src="images/SP%20logo%20footer.png" alt="Socio Potents">
+        <div class="sb-brand">Socio Potents</div>
+        <div class="sb-sub">Admin Dashboard</div>
+      </div>
+      <nav class="sb-nav">
+        <a class="sb-item active" onclick="showView('submissions')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7" />
+            <rect x="14" y="3" width="7" height="7" />
+            <rect x="14" y="14" width="7" height="7" />
+            <rect x="3" y="14" width="7" height="7" />
+          </svg>
+          Submissions
+        </a>
+        <a class="sb-item" onclick="showView('stats')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="20" x2="18" y2="10" />
+            <line x1="12" y1="20" x2="12" y2="4" />
+            <line x1="6" y1="20" x2="6" y2="14" />
+          </svg>
+          Analytics
+        </a>
+      </nav>
+      <div class="sb-footer">
+        <button class="sb-logout" onclick="logout()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15">
+            <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
+            <polyline points="16 17 21 12 16 7" />
+            <line x1="21" y1="12" x2="9" y2="12" />
+          </svg>
+          Log Out
+        </button>
+      </div>
+    </aside>
+
+    <!-- Topbar -->
+    <div class="topbar">
+      <span class="topbar-title" id="topbar-title">Submissions</span>
+      <div class="topbar-right">
+        <span class="topbar-badge" id="topbar-badge">0 total</span>
+        <button class="topbar-refresh" onclick="loadSubmissions()">&#8635; Refresh</button>
+      </div>
+    </div>
+
+    <!-- Main area -->
+    <div class="main">
+      <div class="main-inner">
+
+        <!-- Submissions view -->
+        <div id="view-submissions">
+          <div class="stat-grid" id="stat-grid"></div>
+          <div class="tcard">
+            <div class="tcard-head">
+              <h2>All Submissions</h2>
+              <span id="tbl-count"></span>
+            </div>
+            <table id="tbl" style="display:none;">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Level</th>
+                  <th>Institution</th>
+                  <th>Type</th>
+                  <th>Submitted</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="tbody"></tbody>
+            </table>
+            <div class="emptystate" id="empty" style="display:none;">
+              No submissions yet. Results will appear here once students complete the assessment.
+            </div>
+          </div>
+        </div>
+
+        <!-- Analytics view -->
+        <div id="view-stats" style="display:none;">
+          <!-- KPI row -->
+          <div class="stat-grid" id="stat-grid-2"></div>
+
+          <!-- Charts row -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem;">
+
+            <!-- Bar chart: by education level -->
+            <div class="tcard" style="padding:1.5rem;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;">
+                <div>
+                  <div style="font-size:14px;font-weight:700;color:var(--ink);">By Education Level</div>
+                  <div style="font-size:11.5px;color:var(--muted);margin-top:2px;">Submission breakdown</div>
+                </div>
+                <div style="width:28px;height:28px;background:#e9eef4;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;">📊</div>
+              </div>
+              <div id="chart-level"></div>
+            </div>
+
+            <!-- Donut chart: MBTI personality types -->
+            <div class="tcard" style="padding:1.5rem;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;">
+                <div>
+                  <div style="font-size:14px;font-weight:700;color:var(--ink);">Personality Types</div>
+                  <div style="font-size:11.5px;color:var(--muted);margin-top:2px;">MBTI distribution</div>
+                </div>
+                <div style="width:28px;height:28px;background:#f6efdd;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;">🧠</div>
+              </div>
+              <div id="chart-mbti" style="display:flex;align-items:center;gap:1.5rem;"></div>
+            </div>
+          </div>
+
+          <!-- Horizontal bar: learning styles -->
+          <div class="tcard" style="padding:1.5rem;margin-bottom:1.25rem;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;">
+              <div>
+                <div style="font-size:14px;font-weight:700;color:var(--ink);">Learning Styles</div>
+                <div style="font-size:11.5px;color:var(--muted);margin-top:2px;">Dominant learning preference per student</div>
+              </div>
+              <div style="width:28px;height:28px;background:#e9f0e8;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;">📚</div>
+            </div>
+            <div id="chart-learning"></div>
+          </div>
+
+          <!-- Engagement drivers -->
+          <div class="tcard" style="padding:1.5rem;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;">
+              <div>
+                <div style="font-size:14px;font-weight:700;color:var(--ink);">Engagement Drivers</div>
+                <div style="font-size:11.5px;color:var(--muted);margin-top:2px;">What motivates students most</div>
+              </div>
+              <div style="width:28px;height:28px;background:#f5e8e6;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;">⚡</div>
+            </div>
+            <div id="chart-engagement"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div id="modalbg" onclick="if(event.target===this)closeModal()">
+    <div class="modal" id="modal"></div>
+  </div>
+
+  <!-- Invisible stage for PDF rendering -->
+  <div id="pdf-stage"></div>
+
+  <script>
+    var submissions = [];
+    var currentView = 'submissions';
+
+    function getPw() { return sessionStorage.getItem('sp_admin_pw') || ''; }
+
+    /* LOGIN */
+    function login() {
+      var pw = document.getElementById('pw').value;
+      var err = document.getElementById('gateerr');
+      err.textContent = '';
+      fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: pw })
+      }).then(function (res) { return res.json().then(function (d) { return { ok: res.ok, data: d }; }); })
+        .then(function (r) {
+          if (r.ok && r.data.ok) {
+            sessionStorage.setItem('sp_admin_pw', pw);
+            document.getElementById('gate').style.display = 'none';
+            document.getElementById('dash').style.display = 'block';
+            loadSubmissions();
+          } else { err.textContent = 'Incorrect password.'; }
+        }).catch(function () { err.textContent = 'Could not reach the server. Is it running?'; });
+    }
+
+    function logout() {
+      sessionStorage.removeItem('sp_admin_pw');
+      document.getElementById('dash').style.display = 'none';
+      document.getElementById('gate').style.display = 'flex';
+      document.getElementById('pw').value = '';
+    }
+
+    /* DATA */
+    function loadSubmissions() {
+      fetch('/api/admin/submissions', { headers: { 'x-admin-password': getPw() } })
+        .then(function (res) {
+          if (res.status === 401) { logout(); throw new Error('unauth'); }
+          return res.json();
+        })
+        .then(function (data) {
+          submissions = data.submissions || [];
+          renderAll();
+        }).catch(function () { });
+    }
+
+    function renderAll() {
+      renderStatGrid();
+      renderTable();
+      renderAnalytics();
+      var badge = document.getElementById('topbar-badge');
+      if (badge) badge.textContent = submissions.length + ' total';
+    }
+
+    /* STAT GRID */
+    function renderStatGrid() {
+      var total = submissions.length;
+      var today = submissions.filter(function (s) {
+        return s.submittedAt && new Date(s.submittedAt).toDateString() === new Date().toDateString();
+      }).length;
+      var types = {};
+      submissions.forEach(function (s) { var m = (s.profile && s.profile.mbti) || '—'; types[m] = (types[m] || 0) + 1; });
+      var topType = Object.keys(types).sort(function (a, b) { return types[b] - types[a]; })[0] || '—';
+
+      function makeCard(icon, iconBg, num, lbl, sub) {
+        return '<div class="stat-card">'
+          + '<div class="sc-icon" style="background:' + iconBg + '">' + icon + '</div>'
+          + '<div class="sc-num">' + num + '</div>'
+          + '<div class="sc-lbl">' + lbl + '</div>'
+          + (sub ? '<div class="sc-sub">' + sub + '</div>' : '')
+          + '</div>';
+      }
+
+      var html = makeCard('&#128101;', '#e9eef4', total, 'Total Submissions', 'All time')
+        + makeCard('&#128197;', '#e9f0e8', today, 'Today', 'New submissions')
+        + makeCard('&#129504;', '#f6efdd', topType, 'Top Type', 'Most common MBTI');
+
+      var byLevel = {};
+      submissions.forEach(function (s) { var l = (s.student && s.student.level) || 'Other'; byLevel[l] = (byLevel[l] || 0) + 1; });
+      Object.keys(byLevel).forEach(function (l) {
+        html += makeCard('&#127891;', '#f5e8e6', byLevel[l], l, 'submissions');
+      });
+      document.getElementById('stat-grid').innerHTML = html;
+    }
+
+    /* TABLE */
+    function renderTable() {
+      var tbody = document.getElementById('tbody');
+      var empty = document.getElementById('empty');
+      var tbl = document.getElementById('tbl');
+      var count = document.getElementById('tbl-count');
+      if (count) count.textContent = submissions.length + ' record' + (submissions.length !== 1 ? 's' : '');
+
+      if (!submissions.length) {
+        tbl.style.display = 'none'; empty.style.display = 'block'; return;
+      }
+      tbl.style.display = 'table'; empty.style.display = 'none';
+
+      var html = '';
+      submissions.forEach(function (s, i) {
+        var st = s.student || {};
+        var pr = s.profile || {};
+        var date = s.submittedAt ? new Date(s.submittedAt).toLocaleDateString() : '—';
+        var mbtiCol = mbtiColor(pr.mbti);
+        html += '<tr class="rowlink">'
+          + '<td style="color:var(--muted);font-size:12px;">' + (i + 1) + '</td>'
+          + '<td><strong>' + (st.name || '—') + '</strong></td>'
+          + '<td style="color:var(--muted)">' + (st.email || '—') + '</td>'
+          + '<td>' + (st.level || '—') + '</td>'
+          + '<td>' + (st.institution || '—') + '</td>'
+          + '<td><span class="pill" style="background:' + mbtiCol.bg + ';color:' + mbtiCol.fg + '">' + (pr.mbti || '—') + '</span></td>'
+          + '<td style="color:var(--muted)">' + date + '</td>'
+          + '<td style="white-space:nowrap;display:flex;gap:6px;align-items:center;">'
+          + '  <button class="btn btn-gold" style="font-size:11.5px;padding:6px 12px;" onclick="event.stopPropagation();downloadReport(' + i + ')">&#11123; PDF</button>'
+          + '  <button class="btn" style="font-size:11.5px;padding:6px 12px;" onclick="event.stopPropagation();openModal(' + i + ')">View</button>'
+          + '</td>'
+          + '</tr>';
+      });
+      tbody.innerHTML = html;
+
+      tbody.querySelectorAll('tr.rowlink').forEach(function (tr, i) {
+        tr.addEventListener('click', function () { openModal(i); });
+      });
+    }
+
+    function mbtiColor(mbti) {
+      var m = mbti || '';
+      if (m[0] === 'E') return { bg: '#e9eef4', fg: '#1f3a5f' };
+      if (m[0] === 'I') return { bg: '#e9f0e8', fg: '#2f5233' };
+      return { bg: '#f6efdd', fg: '#8a6d21' };
+    }
+
+    /* ANALYTICS */
+    var CHART_COLORS = ['#d2b356','#1f3a5f','#2f5233','#7a2e2e','#8a6d21','#4a4a8a','#6b4c2a','#2a6b6b'];
+
+    function tally(arr, keyFn) {
+      var out = {};
+      arr.forEach(function(s){ var k = keyFn(s) || 'Unknown'; out[k] = (out[k]||0)+1; });
+      return out;
+    }
+
+    function sortedEntries(obj) {
+      return Object.keys(obj).map(function(k){ return [k, obj[k]]; })
+        .sort(function(a,b){ return b[1]-a[1]; });
+    }
+
+    function barChart(entries, total, colors) {
+      if (!entries.length) return '<div class="chart-empty">No data yet.</div>';
+      return '<div class="chart-bar-wrap">'
+        + entries.map(function(e, i) {
+          var pct = total ? Math.round((e[1]/total)*100) : 0;
+          var col = colors ? colors[i % colors.length] : CHART_COLORS[i % CHART_COLORS.length];
+          return '<div class="chart-bar-row">'
+            + '<div class="chart-bar-label" title="' + e[0] + '">' + e[0] + '</div>'
+            + '<div class="chart-bar-track">'
+            + '  <div class="chart-bar-fill" style="width:' + pct + '%;background:' + col + ';">'
+            + (pct >= 12 ? '<span>' + pct + '%</span>' : '')
+            + '  </div>'
+            + '</div>'
+            + '<div class="chart-bar-count">' + e[1] + '</div>'
+            + '</div>';
+        }).join('')
+        + '</div>';
+    }
+
+    function donutChart(entries, total) {
+      if (!entries.length) return '<div class="chart-empty">No data yet.</div>';
+      var size = 140, cx = size/2, cy = size/2, r = 52, inner = 30;
+      var slices = '';
+      var angle = -Math.PI/2;
+      var top5 = entries.slice(0,6);
+      var otherCount = entries.slice(6).reduce(function(a,e){ return a+e[1]; }, 0);
+      if (otherCount > 0) top5.push(['Other', otherCount]);
+
+      top5.forEach(function(e, i) {
+        var frac = e[1] / total;
+        var sweep = frac * 2 * Math.PI;
+        var x1 = cx + r * Math.cos(angle);
+        var y1 = cy + r * Math.sin(angle);
+        angle += sweep;
+        var x2 = cx + r * Math.cos(angle);
+        var y2 = cy + r * Math.sin(angle);
+        var large = sweep > Math.PI ? 1 : 0;
+        var col = CHART_COLORS[i % CHART_COLORS.length];
+        slices += '<path d="M' + cx + ' ' + cy
+          + ' L' + x1.toFixed(2) + ' ' + y1.toFixed(2)
+          + ' A' + r + ' ' + r + ' 0 ' + large + ' 1 ' + x2.toFixed(2) + ' ' + y2.toFixed(2)
+          + ' Z" fill="' + col + '" stroke="#fff" stroke-width="2"/>';
+      });
+
+      var svg = '<svg width="' + size + '" height="' + size + '" viewBox="0 0 ' + size + ' ' + size + '" style="flex-shrink:0;">'
+        + slices
+        + '<circle cx="' + cx + '" cy="' + cy + '" r="' + inner + '" fill="white"/>'
+        + '<text x="' + cx + '" y="' + (cy-5) + '" text-anchor="middle" font-size="13" font-weight="700" fill="#1a1a1a">' + total + '</text>'
+        + '<text x="' + cx + '" y="' + (cy+12) + '" text-anchor="middle" font-size="9" fill="#888">total</text>'
+        + '</svg>';
+
+      var legend = '<div class="donut-legend">'
+        + top5.map(function(e, i) {
+          var pct = total ? Math.round((e[1]/total)*100) : 0;
+          var col = CHART_COLORS[i % CHART_COLORS.length];
+          return '<div class="donut-legend-item">'
+            + '<div class="donut-legend-dot" style="background:' + col + '"></div>'
+            + '<div class="donut-legend-label">' + e[0] + '</div>'
+            + '<div class="donut-legend-val">' + e[1] + ' · ' + pct + '%</div>'
+            + '</div>';
+        }).join('')
+        + '</div>';
+
+      return svg + legend;
+    }
+
+    function renderAnalytics() {
+      var total = submissions.length;
+
+      // KPI cards for analytics view
+      var sg2 = document.getElementById('stat-grid-2');
+      if (sg2) {
+        var byMbti = tally(submissions, function(s){ return s.profile && s.profile.mbti; });
+        var entries = sortedEntries(byMbti);
+        var topMbtiHtml = '';
+        entries.slice(0,4).forEach(function(e, i) {
+          var c = mbtiColor(e[0]);
+          topMbtiHtml += '<div class="stat-card">'
+            + '<div class="sc-icon" style="background:' + c.bg + '">&#129504;</div>'
+            + '<div class="sc-num" style="font-size:22px;color:' + c.fg + '">' + e[0] + '</div>'
+            + '<div class="sc-lbl">' + e[1] + ' student' + (e[1]!==1?'s':'') + '</div>'
+            + '</div>';
+        });
+        sg2.innerHTML = topMbtiHtml || '<p style="color:var(--muted);font-size:13px;padding:.5rem 0;">No data yet.</p>';
+      }
+
+      // Level bar chart
+      var levelEl = document.getElementById('chart-level');
+      if (levelEl) {
+        var byLevel = tally(submissions, function(s){ return s.student && s.student.level; });
+        levelEl.innerHTML = barChart(sortedEntries(byLevel), total, ['#d2b356','#1f3a5f','#2f5233','#7a2e2e','#8a6d21']);
+      }
+
+      // MBTI donut
+      var mbtiEl = document.getElementById('chart-mbti');
+      if (mbtiEl) {
+        var byMbti2 = tally(submissions, function(s){ return s.profile && s.profile.mbti; });
+        mbtiEl.innerHTML = donutChart(sortedEntries(byMbti2), total);
+      }
+
+      // Learning style bar chart
+      var learnEl = document.getElementById('chart-learning');
+      if (learnEl) {
+        var byLearn = tally(submissions, function(s){ return s.profile && s.profile.topLearningStyle; });
+        learnEl.innerHTML = barChart(sortedEntries(byLearn), total, ['#2f5233','#1f3a5f','#d2b356','#7a2e2e']);
+      }
+
+      // Engagement drivers bar chart
+      var engEl = document.getElementById('chart-engagement');
+      if (engEl) {
+        var byEng = tally(submissions, function(s){ return s.profile && s.profile.topEngagement; });
+        engEl.innerHTML = barChart(sortedEntries(byEng), total, ['#7a2e2e','#8a6d21','#1f3a5f','#2f5233']);
+      }
+    }
+
+    /* VIEW TOGGLE */
+    function showView(v) {
+      currentView = v;
+      document.getElementById('view-submissions').style.display = v === 'submissions' ? 'block' : 'none';
+      document.getElementById('view-stats').style.display = v === 'stats' ? 'block' : 'none';
+      document.querySelectorAll('.sb-item').forEach(function (el) { el.classList.remove('active'); });
+      event.currentTarget.classList.add('active');
+      document.getElementById('topbar-title').textContent = v === 'submissions' ? 'Submissions' : 'Analytics';
+    }
+
+    /* MODAL */
+    function openModal(i) {
+      var s = submissions[i];
+      var st = s.student || {};
+      var pr = s.profile || {};
+      var date = s.submittedAt ? new Date(s.submittedAt).toLocaleString() : '—';
+      var careers = (pr.topCareers || []).join(', ') || '—';
+      var c = mbtiColor(pr.mbti);
+
+      var html = '<div class="modal-header">'
+        + '<div class="modal-header-left">'
+        + '  <h2>' + (st.name || 'Unnamed') + '</h2>'
+        + '  <div class="msub">Submitted ' + date + '</div>'
+        + '</div>'
+        + '<button class="modal-close" onclick="closeModal()">&#215;</button>'
+        + '</div>'
+        + '<div class="modal-body">'
+        + '<div class="modal-section">Student Details</div>'
+        + mrow('Email', st.email)
+        + mrow('Age', st.age)
+        + mrow('Education Level', st.level)
+        + mrow('Institution', st.institution)
+        + mrow('Phone', st.phone || '—')
+        + '<div class="modal-section">Assessment Results</div>'
+        + '<div class="mrow"><span class="mlbl">Personality Type</span>'
+        + '  <span><span class="mbadge" style="background:' + c.bg + ';color:' + c.fg + '">' + (pr.mbti || '—') + '</span>'
+        + (pr.typeName ? ' <span style="color:var(--muted);font-size:12px;">' + pr.typeName + '</span>' : '')
+        + '  </span></div>'
+        + mrow('Learning Style', pr.topLearningStyle)
+        + mrow('Top Strength', pr.topStrength)
+        + mrow('Engagement Driver', pr.topEngagement)
+        + mrow('Suggested Careers', careers)
+        + '</div>'
+        + '<div class="modal-footer">'
+        + '  <button class="btn btn-gold" onclick="downloadReport(' + i + ')">&#11123; Download PDF Report</button>'
+        + '  <button class="btn btn-red" onclick="deleteSubmission(' + JSON.stringify(s.id) + ')">Delete</button>'
+        + '  <button class="btn" onclick="closeModal()">Close</button>'
+        + '</div>';
+
+      document.getElementById('modal').innerHTML = html;
+      document.getElementById('modalbg').classList.add('open');
+    }
+
+    function mrow(label, val) {
+      return '<div class="mrow"><span class="mlbl">' + label + '</span><span class="mval">' + (val === undefined || val === null || val === '' ? '—' : val) + '</span></div>';
+    }
+    function closeModal() { document.getElementById('modalbg').classList.remove('open'); }
+
+    /* DELETE */
+    function deleteSubmission(id) {
+      if (!confirm('Delete this submission permanently? This cannot be undone.')) return;
+      fetch('/api/admin/submissions/' + id, { method: 'DELETE', headers: { 'x-admin-password': getPw() } })
+        .then(function (r) { return r.json(); })
+        .then(function () { closeModal(); loadSubmissions(); });
+    }
+
+    /* PDF DOWNLOAD */
+    function downloadReport(i) {
+      var s = submissions[i];
+      if (!s) return;
+      var st = s.student || {};
+      var pr = s.profile || {};
+
+      var stage = document.getElementById('pdf-stage');
+      stage.innerHTML = buildReportHTML(st, pr, s.submittedAt);
+
+      var filename = 'SocioPotents-Assessment-' + (st.name ? st.name.replace(/[^a-z0-9]+/gi, '-') : 'Report') + '.pdf';
+
+      if (typeof html2pdf === 'undefined') {
+        alert('PDF library not loaded. Please refresh the page and try again.');
+        return;
+      }
+
+      var opt = {
+        margin: [10, 0, 12, 0],
+        filename: filename,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, backgroundColor: '#f7f5f0', scrollX: 0, scrollY: 0, windowWidth: 794, width: 794 },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+        pagebreak: { mode: ['avoid-all', 'css', 'legacy'], avoid: ['.rcard', '.rleadp', '.rhero', '.rdims'] }
+      };
+
+      html2pdf().set(opt).from(stage).save().then(function () {
+        stage.innerHTML = '';
+      }).catch(function () {
+        stage.innerHTML = '';
+        alert('PDF generation failed. Please try again.');
+      });
+    }
+
+    function buildReportHTML(st, pr, submittedAt) {
+      var date = submittedAt ? new Date(submittedAt).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' }) : '';
+      var mbti = pr.mbti || '—';
+      var typeName = pr.typeName || mbti;
+      var careers = pr.topCareers || [];
+
+      var dimDefs = [
+        { l: 'Energy Style', v: mbti[0] === 'E' ? 'Extraverted' : 'Introverted' },
+        { l: 'Learning Style', v: pr.topLearningStyle || '—' },
+        { l: 'Top Strength', v: pr.topStrength || '—' },
+        { l: 'Engagement Driver', v: pr.topEngagement || '—' }
+      ];
+
+      var dimsHtml = dimDefs.map(function (d) {
+        return '<div class="rdim">'
+          + '<div class="rdim-lbl">' + d.l + '</div>'
+          + '<div class="rdim-val">' + d.v + '</div>'
+          + '</div>';
+      }).join('');
+
+      var careersHtml = careers.map(function (c, i) {
+        return '<div class="rcareer">' + (i + 1) + '. ' + c + '</div>';
+      }).join('');
+
+      return '<div style="font-family:system-ui,Arial,sans-serif;background:#f7f5f0;width:794px;">'
+        + '<div class="rhero" style="background:#1a1a1a;color:#fff;padding:2.5rem 2rem 3rem;text-align:center;width:100%;box-sizing:border-box;">'
+        + '  <div style="font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#d2b356;margin-bottom:.6rem;">Socio Potents</div>'
+        + '  <div style="font-size:11px;color:rgba(255,255,255,.5);margin-bottom:1.5rem;">Personality &amp; Career Assessment Report</div>'
+        + '  <div style="display:inline-block;font-size:11px;font-weight:700;padding:4px 18px;border-radius:20px;background:rgba(210,179,86,.18);color:#d2b356;border:1px solid rgba(210,179,86,.4);margin-bottom:.75rem;">' + mbti + ' Personality Type</div>'
+        + '  <div style="font-size:12px;color:rgba(255,255,255,.6);margin-bottom:.5rem;">Report prepared for</div>'
+        + '  <div style="font-family:Georgia,serif;font-size:32px;color:#fff;margin-bottom:.3rem;">' + (st.name || '—') + '</div>'
+        + '  <div style="font-family:Georgia,serif;font-size:18px;color:rgba(255,255,255,.7);font-style:italic;margin-bottom:1.25rem;">' + typeName + '</div>'
+        + '  <div style="font-family:Georgia,serif;font-size:28px;font-weight:700;color:#d2b356;background:rgba(255,255,255,.06);display:inline-block;padding:6px 28px;border-radius:8px;border:1px solid rgba(210,179,86,.35);">' + mbti + '</div>'
+        + '</div>'
+        + '<div style="max-width:680px;margin:0 auto;padding:2rem 1.5rem;">'
+        + '<div style="background:#fff;border:1px solid #e4dfd2;border-radius:12px;padding:1.25rem 1.5rem;margin-bottom:1.5rem;">'
+        + '  <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#a9843a;margin-bottom:.75rem;">Student Information</div>'
+        + infoRow('Name', st.name) + infoRow('Email', st.email) + infoRow('Age', st.age)
+        + infoRow('Education Level', st.level) + infoRow('Institution', st.institution)
+        + (date ? infoRow('Assessment Date', date) : '')
+        + '</div>'
+        + '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#a9843a;margin-bottom:.75rem;margin-top:.25rem;">Assessment Results</div>'
+        + '<div class="rdims" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.5rem;">' + dimsHtml + '</div>'
+        + (careers.length ? '<div style="background:#fff;border:1px solid #e4dfd2;border-radius:12px;padding:1.25rem 1.5rem;margin-bottom:1.5rem;">'
+          + '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#a9843a;margin-bottom:.75rem;">Suggested Career Directions</div>'
+          + careersHtml + '</div>' : '')
+        + '<div style="text-align:center;padding:1.5rem 0 .5rem;border-top:1px solid #e4dfd2;margin-top:1rem;">'
+        + '  <div style="font-size:10.5px;color:#888;line-height:1.6;">This report is generated from self-reported responses using an educational personality and career-guidance framework.<br>It is intended to support self-understanding and career exploration, and is not a clinical or diagnostic assessment.</div>'
+        + '  <div style="font-size:10px;color:#aaa;margin-top:.5rem;">&#169; 2025 Socio Potents</div>'
+        + '</div>'
+        + '</div></div>'
+        + '<style>'
+        + '.rdim{background:#fff;border:1px solid #e4dfd2;border-radius:10px;padding:1rem 1.1rem;}'
+        + '.rdim-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#888;margin-bottom:4px;}'
+        + '.rdim-val{font-size:14px;font-weight:700;color:#1a1a1a;}'
+        + '.rcareer{font-size:13.5px;padding:7px 0;border-bottom:1px solid #f0ece3;color:#333;}'
+        + '.rcareer:last-child{border:none;}'
+        + '</style>';
+    }
+
+    function infoRow(label, val) {
+      if (val === undefined || val === null || val === '') return '';
+      return '<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f0ece3;font-size:13px;">'
+        + '<span style="color:#888;">' + label + '</span>'
+        + '<span style="font-weight:600;color:#1a1a1a;">' + val + '</span></div>';
+    }
+
+    /* AUTO LOGIN */
+    (function () {
+      if (getPw()) {
+        document.getElementById('gate').style.display = 'none';
+        document.getElementById('dash').style.display = 'block';
+        loadSubmissions();
+      }
+    })();
+  </script>
+</body>
+
+</html>

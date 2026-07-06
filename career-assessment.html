@@ -1,0 +1,2320 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Personality & Career Assessment | Socio Potents</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" defer></script>
+  <style>
+    :root {
+      --gold: #d2b356;
+      --gold-dk: #a9843a;
+      --ink: #1a1a1a;
+      --charcoal: #333333;
+      --muted: #6b6b6b;
+      --bg: #f7f5f0;
+      --card: #ffffff;
+      --border: #e4dfd2;
+      --navy: #1f3a5f;
+      --navy-bg: #e9eef4;
+      --forest: #2f5233;
+      --forest-bg: #e9f0e8;
+      --amber: #8a6d21;
+      --amber-bg: #f6efdd;
+      --maroon: #7a2e2e;
+      --maroon-bg: #f5e8e6;
+      --radius: 14px;
+      --radius-lg: 20px;
+      --serif: Georgia, 'Times New Roman', serif;
+      --sans: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.55;
+    }
+
+    .sc {
+      display: none;
+      min-height: 100vh;
+    }
+
+    .sc.on {
+      display: flex;
+      flex-direction: column;
+    }
+
+    #backsite {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      z-index: 600;
+      font-size: 12px;
+      font-weight: 700;
+      background: var(--card);
+      border: 1.5px solid var(--gold);
+      color: var(--gold-dk);
+      padding: 9px 16px;
+      border-radius: 30px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .08);
+    }
+
+    #backsite:hover {
+      background: var(--ink);
+      color: var(--gold);
+      border-color: var(--ink);
+    }
+
+    /* ── LANDING ── */
+    #sl {
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2.5rem 1.5rem;
+    }
+
+    .lwrap {
+      max-width: 640px;
+      margin: 0 auto;
+    }
+
+    .lbrand {
+      font-family: var(--serif);
+      font-size: 13px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--gold-dk);
+      margin-bottom: 1rem;
+      font-weight: 700;
+    }
+
+    .ltitle {
+      font-family: var(--serif);
+      font-size: clamp(30px, 5vw, 44px);
+      line-height: 1.2;
+      margin-bottom: 1rem;
+      color: var(--ink);
+    }
+
+    .lsub {
+      font-size: 16px;
+      color: var(--muted);
+      max-width: 560px;
+      margin: 0 auto 1.75rem;
+    }
+
+    .bdrow {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+
+    .bd {
+      font-size: 12px;
+      font-weight: 700;
+      padding: 7px 16px;
+      border-radius: 30px;
+      background: var(--navy-bg);
+      color: var(--navy);
+      border: 1px solid #d7e1eb;
+    }
+
+    .disclaimer {
+      font-size: 12.5px;
+      color: var(--muted);
+      background: #faf8f3;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: .9rem 1.1rem;
+      text-align: left;
+      max-width: 560px;
+      margin: 0 auto 2rem;
+    }
+
+    .disclaimer b {
+      color: var(--ink);
+    }
+
+    .btn-s {
+      font-family: var(--sans);
+      font-size: 16px;
+      font-weight: 700;
+      padding: 15px 44px;
+      border-radius: 6px;
+      background: var(--ink);
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      letter-spacing: .02em;
+      transition: background .2s;
+    }
+
+    .btn-s:hover {
+      background: var(--gold-dk);
+    }
+
+    /* ── LOGIN / DETAILS FORM ── */
+    #sob {
+      align-items: center;
+      justify-content: center;
+      padding: 2.5rem 1.5rem;
+    }
+
+    .obc {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2.25rem;
+      max-width: 520px;
+      width: 100%;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, .06);
+    }
+
+    .obtitle {
+      font-family: var(--serif);
+      font-size: 24px;
+      margin-bottom: .35rem;
+      color: var(--ink);
+    }
+
+    .obsub {
+      font-size: 13.5px;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+    }
+
+    .field {
+      margin-bottom: 1.1rem;
+    }
+
+    .field label {
+      display: block;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--charcoal);
+      margin-bottom: .4rem;
+    }
+
+    .field .req {
+      color: var(--maroon);
+    }
+
+    .inp,
+    .sel {
+      width: 100%;
+      font-family: var(--sans);
+      font-size: 14.5px;
+      border: 1.5px solid #dcd6c8;
+      border-radius: 8px;
+      padding: 11px 14px;
+      outline: none;
+      background: #fcfbf8;
+      transition: border-color .15s;
+    }
+
+    .inp:focus,
+    .sel:focus {
+      border-color: var(--gold-dk);
+      background: #fff;
+    }
+
+    .frow {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .9rem;
+    }
+
+    .errtxt {
+      font-size: 12px;
+      color: var(--maroon);
+      margin-top: 1rem;
+      min-height: 16px;
+    }
+
+    .btn-n {
+      width: 100%;
+      font-family: var(--sans);
+      font-size: 15px;
+      font-weight: 700;
+      padding: 14px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      margin-top: .4rem;
+      background: var(--ink);
+      color: #fff;
+      transition: background .2s;
+    }
+
+    .btn-n:hover {
+      background: var(--gold-dk);
+    }
+
+    .btn-n:disabled {
+      background: #d8d3c6;
+      color: #8b8577;
+      cursor: not-allowed;
+    }
+
+    /* ── QUIZ ── */
+    #sq {
+      flex-direction: column;
+    }
+
+    .qtop {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .qlogo {
+      font-family: var(--serif);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--ink);
+      white-space: nowrap;
+    }
+
+    .qpwrap {
+      flex: 1;
+    }
+
+    .qptr {
+      height: 7px;
+      background: #ece7db;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .qpfl {
+      height: 100%;
+      border-radius: 4px;
+      transition: width .4s ease;
+    }
+
+    .qptxt {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-top: 4px;
+      text-align: right;
+    }
+
+    .dpill {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 5px 14px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+
+    .qmain {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2.25rem 1.5rem;
+      max-width: 680px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .qdbadge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 6px 16px;
+      border-radius: 20px;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    .qnum {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: .5rem;
+    }
+
+    .qtxt {
+      font-family: var(--serif);
+      font-size: clamp(19px, 3.4vw, 24px);
+      line-height: 1.4;
+      color: var(--ink);
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .qopts {
+      display: grid;
+      gap: 9px;
+      width: 100%;
+    }
+
+    .qopt {
+      font-family: var(--sans);
+      font-size: 14.5px;
+      font-weight: 500;
+      padding: 14px 18px;
+      border: 1.5px solid #ded8ca;
+      border-radius: 10px;
+      background: #fff;
+      color: var(--ink);
+      cursor: pointer;
+      text-align: left;
+      transition: all .15s;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .qopt:hover {
+      border-color: var(--gold-dk);
+    }
+
+    .oltr {
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      background: #f2efe6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      flex-shrink: 0;
+      transition: all .15s;
+    }
+
+    .scalewrap {
+      width: 100%;
+    }
+
+    .scrow {
+      display: flex;
+      gap: 8px;
+      margin-bottom: .5rem;
+    }
+
+    .scbtn {
+      flex: 1;
+      font-family: var(--sans);
+      font-size: 17px;
+      font-weight: 700;
+      padding: 15px 0;
+      border: 1.5px solid #ded8ca;
+      border-radius: 8px;
+      background: #fff;
+      cursor: pointer;
+      transition: all .15s;
+      text-align: center;
+      color: var(--ink);
+    }
+
+    .scbtn:hover {
+      border-color: var(--gold-dk);
+    }
+
+    .sclabs {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    .qfooter {
+      max-width: 680px;
+      margin: 0 auto;
+      width: 100%;
+      padding: .75rem 1.5rem 1.75rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .btn-qbk {
+      font-family: var(--sans);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 10px;
+    }
+
+    .btn-qnxt {
+      font-family: var(--sans);
+      font-size: 14.5px;
+      font-weight: 700;
+      padding: 12px 30px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      background: var(--ink);
+      color: #fff;
+      transition: background .2s;
+    }
+
+    .btn-qnxt:hover:not(:disabled) {
+      background: var(--gold-dk);
+    }
+
+    .btn-qnxt:disabled {
+      background: #d8d3c6;
+      color: #8b8577;
+      cursor: not-allowed;
+    }
+
+    /* ── PROCESSING ── */
+    #spr {
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+      background: var(--ink);
+    }
+
+    .prtitle {
+      font-family: var(--serif);
+      font-size: 26px;
+      color: #fff;
+      margin: .5rem 0;
+    }
+
+    .prsub {
+      font-size: 14px;
+      color: rgba(255, 255, 255, .65);
+      margin-bottom: 2rem;
+    }
+
+    .prsteps {
+      list-style: none;
+    }
+
+    .prstep {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, .35);
+      padding: 7px 0;
+      transition: all .4s;
+    }
+
+    .prstep.act {
+      color: var(--gold);
+      font-size: 15px;
+    }
+
+    .prstep.dn {
+      color: rgba(255, 255, 255, .65);
+    }
+
+    .prstep.dn::before {
+      content: '✓ ';
+      color: var(--gold);
+    }
+
+    .prspin {
+      width: 34px;
+      height: 34px;
+      border: 3px solid rgba(255, 255, 255, .2);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      margin: 0 auto 1.25rem;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* ── PROFILE HERO ── */
+    .phero {
+      width: 100%;
+      padding: 2.75rem 2rem 3rem;
+      text-align: center;
+      background: var(--ink);
+      color: #fff;
+    }
+
+    .phnav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 900px;
+      margin: 0 auto 2rem;
+    }
+
+    .phlogo {
+      font-family: var(--serif);
+      font-size: 15px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    .btn-rtk {
+      font-family: var(--sans);
+      font-size: 12px;
+      font-weight: 600;
+      border: 1px solid rgba(255, 255, 255, .3);
+      background: transparent;
+      color: rgba(255, 255, 255, .75);
+      padding: 7px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+
+    .btn-rtk:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+
+    .phchip {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      padding: 6px 20px;
+      border-radius: 30px;
+      background: rgba(210, 179, 86, .18);
+      color: var(--gold);
+      border: 1px solid rgba(210, 179, 86, .4);
+      margin-bottom: 1rem;
+    }
+
+    .phname {
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, .7);
+      margin-bottom: 1.25rem;
+    }
+
+    .phtitle {
+      font-family: var(--serif);
+      font-size: clamp(28px, 5vw, 46px);
+      color: #fff;
+      margin-bottom: .5rem;
+    }
+
+    .phtag {
+      font-size: 15px;
+      color: rgba(255, 255, 255, .65);
+      font-style: italic;
+      margin-bottom: 1.25rem;
+    }
+
+    .phmbti {
+      font-family: var(--serif);
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--gold);
+      background: rgba(255, 255, 255, .06);
+      display: inline-block;
+      padding: 8px 30px;
+      border-radius: 8px;
+      border: 1px solid rgba(210, 179, 86, .35);
+    }
+
+    .phdims {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      max-width: 560px;
+      margin: 2rem auto 0;
+    }
+
+    .phdim {
+      background: rgba(255, 255, 255, .06);
+      border-radius: 10px;
+      padding: 12px 16px;
+      text-align: left;
+    }
+
+    .phdtop {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, .85);
+      margin-bottom: 6px;
+    }
+
+    .phdtr {
+      height: 6px;
+      background: rgba(255, 255, 255, .15);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .phdfl {
+      height: 100%;
+      border-radius: 3px;
+      background: var(--gold);
+    }
+
+    /* ── PROFILE BODY ── */
+    .pbody {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 2rem;
+      width: 100%;
+    }
+
+    .sectitle {
+      font-family: var(--serif);
+      font-size: 20px;
+      color: var(--ink);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .sectitle .n {
+      color: var(--gold-dk);
+    }
+
+    .leadp {
+      font-size: 14.5px;
+      color: var(--charcoal);
+      line-height: 1.7;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .cgrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .pcard {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 1.4rem;
+      border: 1px solid var(--border);
+    }
+
+    .clbl {
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin-bottom: .6rem;
+      color: var(--muted);
+    }
+
+    .cttl {
+      font-family: var(--serif);
+      font-size: 18px;
+      margin-bottom: .5rem;
+      color: var(--ink);
+    }
+
+    .cbody {
+      font-size: 13.5px;
+      color: var(--charcoal);
+      line-height: 1.7;
+    }
+
+    .strtags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: .85rem;
+    }
+
+    .strtag {
+      font-size: 12px;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 20px;
+    }
+
+    .inslist {
+      list-style: none;
+    }
+
+    .insitem {
+      display: flex;
+      gap: 12px;
+      padding: 11px 0;
+      border-bottom: 1px solid var(--border);
+      align-items: flex-start;
+    }
+
+    .insitem:last-child {
+      border: none;
+    }
+
+    .insico {
+      font-size: 14px;
+      color: var(--gold-dk);
+      flex-shrink: 0;
+      margin-top: 3px;
+      font-weight: 700;
+    }
+
+    .instxt {
+      font-size: 13.5px;
+      color: var(--charcoal);
+      line-height: 1.65;
+    }
+
+    .cscroll {
+      display: flex;
+      gap: 14px;
+      overflow-x: auto;
+      padding: .25rem 0 1rem;
+    }
+
+    .ccard {
+      flex-shrink: 0;
+      width: 150px;
+      background: var(--card);
+      border-radius: 12px;
+      padding: 0 0 .9rem;
+      text-align: center;
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .cimgw {
+      width: 100%;
+      height: 120px;
+      overflow: hidden;
+      background: #f2efe6;
+      position: relative;
+    }
+
+    .cimg {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .cfb {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 38px;
+      color: var(--muted);
+    }
+
+    .cname {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ink);
+      margin: 8px 8px 2px;
+    }
+
+    .crole {
+      font-size: 10.5px;
+      color: var(--muted);
+      margin: 0 8px 6px;
+    }
+
+    .cmatch {
+      font-size: 10.5px;
+      font-weight: 600;
+      margin: 6px 8px 0;
+      padding: 3px 9px;
+      border-radius: 9px;
+      display: inline-block;
+    }
+
+    .cargrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+      margin-bottom: 1.5rem;
+    }
+
+    .carcard {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 1.15rem;
+      border: 1px solid var(--border);
+    }
+
+    .carttl {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 4px;
+    }
+
+    .cardsc {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+      margin-bottom: .75rem;
+    }
+
+    .carbar {
+      height: 5px;
+      background: #ece7db;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .carbfl {
+      height: 100%;
+      border-radius: 3px;
+    }
+
+    .carpct {
+      font-size: 11px;
+      font-weight: 700;
+      margin-top: 5px;
+    }
+
+    .tline {
+      position: relative;
+      padding-left: 1.75rem;
+    }
+
+    .tline::before {
+      content: '';
+      position: absolute;
+      left: 6px;
+      top: 2px;
+      bottom: 2px;
+      width: 2px;
+      background: var(--border);
+    }
+
+    .tlitem {
+      position: relative;
+      margin-bottom: 1.4rem;
+    }
+
+    .tlitem:last-child {
+      margin-bottom: 0;
+    }
+
+    .tldot {
+      position: absolute;
+      left: -1.75rem;
+      top: 4px;
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: var(--gold);
+      border: 2px solid #fff;
+      box-shadow: 0 0 0 1px var(--gold);
+    }
+
+    .tllbl {
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      margin-bottom: 3px;
+      color: var(--gold-dk);
+    }
+
+    .tlttl {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 3px;
+    }
+
+    .tlbody {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .stip {
+      background: var(--card);
+      border-radius: 10px;
+      padding: 1.1rem 1.25rem;
+      border: 1px solid var(--border);
+      margin-bottom: .7rem;
+    }
+
+    .stitl {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 4px;
+    }
+
+    .stbdy {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .actrow {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      padding: 0 1.5rem 2rem;
+      max-width: 900px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .btn-act {
+      font-family: var(--sans);
+      font-size: 14px;
+      font-weight: 700;
+      padding: 12px 26px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      transition: all .15s;
+    }
+
+    .btn-dl {
+      background: var(--ink);
+      color: #fff;
+    }
+
+    .btn-dl:hover {
+      background: var(--gold-dk);
+    }
+
+    .btn-sh {
+      background: #fff;
+      color: var(--ink);
+      border: 1.5px solid var(--ink);
+    }
+
+    .btn-sh:hover {
+      background: var(--ink);
+      color: #fff;
+    }
+
+    .btn-ag {
+      background: #fff;
+      color: var(--muted);
+      border: 1.5px solid var(--border);
+    }
+
+    .btn-ag:hover {
+      border-color: var(--gold-dk);
+      color: var(--gold-dk);
+    }
+
+    .savestatus {
+      font-size: 12px;
+      color: var(--muted);
+      padding: 0 1.5rem 1rem;
+      max-width: 900px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .fmark {
+      text-align: center;
+      font-size: 11px;
+      color: var(--muted);
+      padding: 1.5rem 1rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .fmark img {
+      height: 24px;
+      width: auto;
+      opacity: .9;
+    }
+
+    .fmark .discl {
+      max-width: 560px;
+      font-size: 10.5px;
+      line-height: 1.6;
+      color: #8b8577;
+    }
+
+    @media(max-width:560px) {
+      .phdims {
+        grid-template-columns: 1fr;
+      }
+
+      .frow {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media print {
+
+      #backsite,
+      .btn-rtk,
+      .actrow,
+      #sl,
+      #sob,
+      #sq,
+      #spr,
+      .savestatus {
+        display: none !important;
+      }
+
+      body {
+        background: #fff !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      #spf {
+        display: block !important;
+      }
+
+      .phero {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .pcard,
+      .ccard,
+      .carcard,
+      .stip,
+      .leadp,
+      .tlitem {
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+
+      @page {
+        margin: 1.5cm;
+        size: A4 portrait;
+      }
+    }
+    /* PDF capture: ensure full-width rendering */
+    #report-content { width: 100%; }
+    #report-content .phero { width: 100% !important; box-sizing: border-box !important; padding-left: 0 !important; padding-right: 0 !important; }
+    #report-content .pbody { max-width: 900px; margin-left: auto; margin-right: auto; }
+  </style>
+</head>
+
+<body>
+
+  <a id="backsite" href="index.html">← Socio Potents</a>
+
+  <!-- LANDING -->
+  <section class="sc on" id="sl">
+    <div class="lwrap">
+      <div class="lbrand">Socio Potents</div>
+      <h1 class="ltitle">Personality &amp; Career Assessment</h1>
+      <p class="lsub">A structured self-assessment for school and college students, designed to help you understand your personality style, learning preferences, natural strengths and motivational drivers — and how these relate to potential career directions.</p>
+      <div class="bdrow">
+        <span class="bd">40 Questions</span>
+        <span class="bd">4 Domains</span>
+        <span class="bd">~20 Minutes</span>
+        <span class="bd">Confidential</span>
+      </div>
+      <div class="disclaimer"><b>Please note:</b> this is an educational self-reflection tool built on established personality and learning-style frameworks. It is intended for guidance and self-understanding only, and is <b>not</b> a clinical or diagnostic instrument. If you have concerns about your mental health or wellbeing, please speak with a qualified professional or a trusted adult.</div>
+      <button class="btn-s" onclick="goOnboard()">Begin Assessment</button>
+    </div>
+  </section>
+
+  <!-- LOGIN / DETAILS -->
+  <section class="sc" id="sob">
+    <div class="obc">
+      <h2 class="obtitle">Your Details</h2>
+      <p class="obsub">Please enter your details before starting. These are used to generate and personalise your report.</p>
+      <div class="field">
+        <label>Full Name <span class="req">*</span></label>
+        <input class="inp" id="in-name" type="text" placeholder="Your full name" autocomplete="off">
+      </div>
+      <div class="frow">
+        <div class="field">
+          <label>Email <span class="req">*</span></label>
+          <input class="inp" id="in-email" type="email" placeholder="you@example.com" autocomplete="off">
+        </div>
+        <div class="field">
+          <label>Age <span class="req">*</span></label>
+          <input class="inp" id="in-age" type="number" min="10" max="30" placeholder="e.g. 16" autocomplete="off">
+        </div>
+      </div>
+      <div class="field">
+        <label>Education Level <span class="req">*</span></label>
+        <select class="sel" id="in-level">
+          <option value="">Select one</option>
+          <option value="Class 8-9">Class 8–9 (Middle School)</option>
+          <option value="Class 10-11">Class 10–11 (Senior School)</option>
+          <option value="Class 12">Class 12 (Final Year)</option>
+          <option value="College">College / University</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>School / College Name <span class="req">*</span></label>
+        <input class="inp" id="in-institution" type="text" placeholder="Institution name" autocomplete="off">
+      </div>
+      <div class="field">
+        <label>Phone (optional)</label>
+        <input class="inp" id="in-phone" type="tel" placeholder="Optional" autocomplete="off">
+      </div>
+      <div class="errtxt" id="ob-err"></div>
+      <button class="btn-n" id="ob-nxt" onclick="startQuiz()">Start Assessment</button>
+    </div>
+  </section>
+
+  <!-- QUIZ -->
+  <section class="sc" id="sq">
+    <div class="qtop">
+      <div class="qlogo">Socio Potents</div>
+      <div class="qpwrap">
+        <div class="qptr">
+          <div class="qpfl" id="qpfl" style="width:0%"></div>
+        </div>
+        <div class="qptxt" id="qptxt">Question 1 of 40</div>
+      </div>
+      <div class="dpill" id="dpill"></div>
+    </div>
+    <div class="qmain" id="qmain"></div>
+    <div class="qfooter">
+      <button class="btn-qbk" onclick="qBack()">← Back</button>
+      <button class="btn-qnxt" id="btn-qnxt" disabled onclick="qNext()">Next →</button>
+    </div>
+  </section>
+
+  <!-- PROCESSING -->
+  <section class="sc" id="spr">
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:2rem;text-align:center;">
+      <div class="prspin"></div>
+      <h2 class="prtitle">Preparing your report</h2>
+      <p class="prsub">Analysing your responses across all four domains...</p>
+      <ul class="prsteps" id="prsteps">
+        <li class="prstep" id="ps1">Scoring personality dimensions</li>
+        <li class="prstep" id="ps2">Identifying learning style</li>
+        <li class="prstep" id="ps3">Mapping natural strengths</li>
+        <li class="prstep" id="ps4">Assessing engagement drivers</li>
+        <li class="prstep" id="ps5">Matching career pathways</li>
+        <li class="prstep" id="ps6">Finalising report</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- PROFILE -->
+  <section class="sc" id="spf">
+    <div id="report-content">
+      <div id="ph-area"></div>
+      <div class="pbody" id="pbody"></div>
+      <div class="fmark">
+        <img src="images/SP%20logo%20footer.png" alt="Socio Potents">
+        <span>© 2025 Socio Potents — Personality &amp; Career Assessment</span>
+        <span class="discl">This report is generated from your self-reported responses using an educational personality and career-guidance framework. It is intended to support self-understanding and career exploration, and is not a clinical or diagnostic assessment.</span>
+      </div>
+    </div>
+    <div class="savestatus" id="savestatus"></div>
+    <div class="actrow">
+      <button class="btn-act btn-dl" onclick="doPrint()">Download PDF Report</button>
+      <button class="btn-act btn-sh" onclick="doShare()">Share Summary</button>
+      <button class="btn-act btn-ag" onclick="restart()">Start Over</button>
+    </div>
+  </section>
+
+  <script>
+    /* ────────────────────────────
+       STATE
+    ──────────────────────────── */
+    var student = { name: '', email: '', age: null, level: '', institution: '', phone: '' };
+    var answers = {};
+    var currentQ = 0;
+
+    /* ────────────────────────────
+       DOMAIN CONFIG
+    ──────────────────────────── */
+    var DC = {
+      personality: { label: 'Personality', color: 'var(--navy)', bg: 'var(--navy-bg)', text: 'var(--navy)', prog: 'var(--navy)' },
+      learning: { label: 'Learning Style', color: 'var(--forest)', bg: 'var(--forest-bg)', text: 'var(--forest)', prog: 'var(--forest)' },
+      strength: { label: 'Strengths', color: 'var(--amber)', bg: 'var(--amber-bg)', text: 'var(--amber)', prog: 'var(--amber)' },
+      engagement: { label: 'Engagement', color: 'var(--maroon)', bg: 'var(--maroon-bg)', text: 'var(--maroon)', prog: 'var(--maroon)' }
+    };
+
+    /* ────────────────────────────
+       QUESTIONS (40 total — 10 per domain)
+    ──────────────────────────── */
+    var questions = [
+      {
+        id: 'P1', domain: 'personality', type: 'choice',
+        text: "On a free weekend, you'd rather:",
+        options: [{ val: 'E', text: "Hang out with a big group of friends" },
+        { val: 'I', text: "Spend time alone doing something you enjoy" },
+        { val: 'E', text: "Meet up with 2–3 close friends" },
+        { val: 'I', text: "Read, create, or relax by yourself" }]
+      },
+      {
+        id: 'P2', domain: 'personality', type: 'choice',
+        text: "In free time at school, you usually:",
+        options: [{ val: 'S', text: "Finish your work or tidy your notes" },
+        { val: 'N', text: "Daydream about a new idea" },
+        { val: 'S', text: "Talk with classmates about normal stuff" },
+        { val: 'N', text: "Think about a big idea" }]
+      },
+      {
+        id: 'P3', domain: 'personality', type: 'choice',
+        text: "Two friends argue. One is right, one is upset. You:",
+        options: [{ val: 'T', text: "Say who is right" },
+        { val: 'F', text: "Comfort the upset friend first" },
+        { val: 'T', text: "Explain why, so both understand" },
+        { val: 'F', text: "Try to fix their friendship first" }]
+      },
+      {
+        id: 'P4', domain: 'personality', type: 'choice',
+        text: "A big exam is two weeks away. Right now you are:",
+        options: [{ val: 'J', text: "Already following a study plan" },
+        { val: 'P', text: "Planning to start closer to the exam" },
+        { val: 'J', text: "Deciding what to study, and when" },
+        { val: 'P', text: "Waiting until you feel like studying" }]
+      },
+      {
+        id: 'P5', domain: 'personality', type: 'scale',
+        text: "After being around people for a long time, how do you feel?",
+        scaleLabels: ['Tired, need time alone', 'Full of energy, want more']
+      },
+      {
+        id: 'P6', domain: 'personality', type: 'choice',
+        text: "A new topic is easiest for you when:",
+        options: [{ val: 'S', text: "You get clear facts and examples" },
+        { val: 'N', text: "You get the big idea behind it" },
+        { val: 'S', text: "You see it used in real life" },
+        { val: 'N', text: "You learn the reason behind it" }]
+      },
+      {
+        id: 'P7', domain: 'personality', type: 'choice',
+        text: "When giving a friend feedback, you:",
+        options: [{ val: 'T', text: "Are honest, even if it's hard to hear" },
+        { val: 'F', text: "Say it kindly so they don't feel bad" },
+        { val: 'T', text: "Focus on how to make it better" },
+        { val: 'F', text: "Think about their feelings first" }]
+      },
+      {
+        id: 'P8', domain: 'personality', type: 'scale',
+        text: "How do you feel when plans change suddenly?",
+        scaleLabels: ['I like things to stay the same', 'I go with the flow']
+      },
+      {
+        id: 'P9', domain: 'personality', type: 'choice',
+        text: "Around people you don't know, you:",
+        options: [{ val: 'E', text: "Try to meet as many people as you can" },
+        { val: 'I', text: "Stay with one or two people you know" },
+        { val: 'E', text: "Help organise what the group does" },
+        { val: 'I', text: "Watch for a while before joining in" }]
+      },
+      {
+        id: 'P10', domain: 'personality', type: 'choice',
+        text: "Learning something new, you'd rather:",
+        options: [{ val: 'S', text: "Follow clear, step-by-step instructions" },
+        { val: 'N', text: "Try it your own way" },
+        { val: 'S', text: "Practise with examples" },
+        { val: 'N', text: "Learn the reason behind it first" }]
+      },
+
+      {
+        id: 'L1', domain: 'learning', type: 'choice',
+        text: "You understand a new idea best when it is:",
+        options: [{ val: 'visual', text: "Shown in a picture or chart" },
+        { val: 'auditory', text: "Explained out loud" },
+        { val: 'kinesthetic', text: "Something you try yourself" },
+        { val: 'reading', text: "Written down clearly" }]
+      },
+      {
+        id: 'L2', domain: 'learning', type: 'choice',
+        text: "With a new app, you would first:",
+        options: [{ val: 'visual', text: "Watch a short video about it" },
+        { val: 'auditory', text: "Ask someone to explain it" },
+        { val: 'kinesthetic', text: "Just start using it" },
+        { val: 'reading', text: "Read the instructions" }]
+      },
+      {
+        id: 'L3', domain: 'learning', type: 'scale',
+        text: "I understand things better when I talk about them.",
+        scaleLabels: ['Not really', 'Yes, a lot']
+      },
+      {
+        id: 'L4', domain: 'learning', type: 'choice',
+        text: "When studying for a test, you like to:",
+        options: [{ val: 'visual', text: "Make mind maps or drawings" },
+        { val: 'auditory', text: "Say it out loud to someone" },
+        { val: 'kinesthetic', text: "Do practice questions" },
+        { val: 'reading', text: "Rewrite your notes" }]
+      },
+      {
+        id: 'L5', domain: 'learning', type: 'choice',
+        text: "A hard topic finally makes sense when:",
+        options: [{ val: 'visual', text: "You see a picture that explains it" },
+        { val: 'auditory', text: "Someone explains it your way" },
+        { val: 'kinesthetic', text: "You try it yourself" },
+        { val: 'reading', text: "You read it somewhere clearer" }]
+      },
+      {
+        id: 'L6', domain: 'learning', type: 'scale',
+        text: "I'd rather read something than have someone explain it to me.",
+        scaleLabels: ["I'd rather listen", "I'd rather read"]
+      },
+      {
+        id: 'L7', domain: 'learning', type: 'choice',
+        text: "In class, you pay attention best when there is:",
+        options: [{ val: 'visual', text: "Pictures, slides or diagrams" },
+        { val: 'auditory', text: "A fun spoken explanation" },
+        { val: 'kinesthetic', text: "Something hands-on to do" },
+        { val: 'reading', text: "Something to read along with" }]
+      },
+      {
+        id: 'L8', domain: 'learning', type: 'choice',
+        text: "To remember how to get somewhere, you:",
+        options: [{ val: 'visual', text: "Picture the route in your head" },
+        { val: 'auditory', text: "Remember directions someone said" },
+        { val: 'kinesthetic', text: "Just remember the walk" },
+        { val: 'reading', text: "Use written directions" }]
+      },
+      {
+        id: 'L9', domain: 'learning', type: 'choice',
+        text: "In a group project, you'd rather:",
+        options: [{ val: 'visual', text: "Make the slides or pictures" },
+        { val: 'auditory', text: "Talk and explain the project" },
+        { val: 'kinesthetic', text: "Build or make the actual thing" },
+        { val: 'reading', text: "Do the research and writing" }]
+      },
+      {
+        id: 'L10', domain: 'learning', type: 'scale',
+        text: "I learn better by doing than by reading about it.",
+        scaleLabels: ['I like reading first', 'I like doing first']
+      },
+
+      {
+        id: 'S1', domain: 'strength', type: 'choice',
+        text: "Classmates ask you for help with:",
+        options: [{ val: 'analytical', text: "Solving a hard problem" },
+        { val: 'creative', text: "Creative ideas" },
+        { val: 'social', text: "Advice about their life" },
+        { val: 'organised', text: "Planning things" }]
+      },
+      {
+        id: 'S2', domain: 'strength', type: 'choice',
+        text: "Without any practice, you'd be good at:",
+        options: [{ val: 'creative', text: "Writing or making something creative" },
+        { val: 'analytical', text: "A logic puzzle" },
+        { val: 'social', text: "Giving a speech" },
+        { val: 'practical', text: "Building or fixing something" }]
+      },
+      {
+        id: 'S3', domain: 'strength', type: 'scale',
+        text: "Friends come to me for advice.",
+        scaleLabels: ['Rarely', 'All the time']
+      },
+      {
+        id: 'S4', domain: 'strength', type: 'choice',
+        text: "Your biggest strength is:",
+        options: [{ val: 'empathy', text: "Knowing how people feel" },
+        { val: 'creative', text: "Coming up with new ideas" },
+        { val: 'focus', text: "Staying focused for a long time" },
+        { val: 'memory', text: "Remembering small details" }]
+      },
+      {
+        id: 'S5', domain: 'strength', type: 'choice',
+        text: "With 30 minutes to impress someone, you'd:",
+        options: [{ val: 'creative', text: "Make something creative" },
+        { val: 'analytical', text: "Solve a hard problem" },
+        { val: 'social', text: "Have a great chat with them" },
+        { val: 'practical', text: "Show a skill you're good at" }]
+      },
+      {
+        id: 'S6', domain: 'strength', type: 'choice',
+        text: "In a study group, you're usually the one who:",
+        options: [{ val: 'analytical', text: "Explains things clearly" },
+        { val: 'organised', text: "Keeps everyone on track" },
+        { val: 'social', text: "Keeps the mood fun" },
+        { val: 'practical', text: "Builds or tests the examples" }]
+      },
+      {
+        id: 'S7', domain: 'strength', type: 'scale',
+        text: "I can focus on something for hours if I like it.",
+        scaleLabels: ['Not really', 'Yes, easily']
+      },
+      {
+        id: 'S8', domain: 'strength', type: 'choice',
+        text: "This comes easily to you:",
+        options: [{ val: 'memory', text: "Remembering names and details" },
+        { val: 'creative', text: "New ideas" },
+        { val: 'analytical', text: "Understanding how things work" },
+        { val: 'organised', text: "Making a plan" }]
+      },
+      {
+        id: 'S9', domain: 'strength', type: 'choice',
+        text: "A friend is upset. Your first move is to:",
+        options: [{ val: 'empathy', text: "Listen to how they feel" },
+        { val: 'analytical', text: "Help them figure out what to do" },
+        { val: 'social', text: "Cheer them up" },
+        { val: 'organised', text: "Help them make a plan" }]
+      },
+      {
+        id: 'S10', domain: 'strength', type: 'scale',
+        text: "I notice small details other people miss.",
+        scaleLabels: ['Rarely', 'Often']
+      },
+
+      {
+        id: 'E1', domain: 'engagement', type: 'choice',
+        text: "You pay attention in class best when there's:",
+        options: [{ val: 'challenge', text: "A problem to solve" },
+        { val: 'story', text: "A good story or example" },
+        { val: 'competition', text: "A quiz or game" },
+        { val: 'create', text: "A creative project" }]
+      },
+      {
+        id: 'E2', domain: 'engagement', type: 'choice',
+        text: "You stop paying attention in class when:",
+        options: [{ val: 'purpose', text: "You don't see the point of it" },
+        { val: 'boring', text: "It's just listening, nothing to do" },
+        { val: 'toohard', text: "You're lost and too shy to ask" },
+        { val: 'tooeasy', text: "It's too easy for you" }]
+      },
+      {
+        id: 'E3', domain: 'engagement', type: 'scale',
+        text: "I try harder when I really care about the topic.",
+        scaleLabels: ['Not much', 'A lot']
+      },
+      {
+        id: 'E4', domain: 'engagement', type: 'choice',
+        text: "Your best class would have:",
+        options: [{ val: 'purpose', text: "Clear links to real jobs" },
+        { val: 'social', text: "Teamwork with friends" },
+        { val: 'mastery', text: "A chance to get really good at something" },
+        { val: 'create', text: "Freedom to create" }]
+      },
+      {
+        id: 'E5', domain: 'engagement', type: 'choice',
+        text: "You try extra hard when:",
+        options: [{ val: 'impact', text: "It really helps someone" },
+        { val: 'choice', text: "You get to choose how to do it" },
+        { val: 'competition', text: "There's a prize or ranking" },
+        { val: 'create', text: "You get to be creative" }]
+      },
+      {
+        id: 'E6', domain: 'engagement', type: 'scale',
+        text: "I enjoy quizzes and debates.",
+        scaleLabels: ['Not really', 'Yes, a lot']
+      },
+      {
+        id: 'E7', domain: 'engagement', type: 'choice',
+        text: "What keeps you working the longest?",
+        options: [{ val: 'mastery', text: "Getting really good at something" },
+        { val: 'social', text: "Working well with a team" },
+        { val: 'impact', text: "Knowing it helps someone" },
+        { val: 'create', text: "Expressing your own ideas" }]
+      },
+      {
+        id: 'E8', domain: 'engagement', type: 'choice',
+        text: "Your favourite kind of project is:",
+        options: [{ val: 'choice', text: "Open, so you choose how to do it" },
+        { val: 'purpose', text: "Linked to a real goal" },
+        { val: 'social', text: "Done as a team" },
+        { val: 'competition', text: "Ranked, with a winner" }]
+      },
+      {
+        id: 'E9', domain: 'engagement', type: 'scale',
+        text: "I prefer working in a team over working alone.",
+        scaleLabels: ['I prefer working alone', 'I prefer a team']
+      },
+      {
+        id: 'E10', domain: 'engagement', type: 'choice',
+        text: "What would make you excited for school every day?",
+        options: [{ val: 'purpose', text: "Seeing how it connects to a career" },
+        { val: 'create', text: "Building and making things" },
+        { val: 'competition', text: "Friendly competition" },
+        { val: 'mastery', text: "Getting really good at something" }]
+      }
+    ];
+
+    /* ────────────────────────────
+       PROFILES DATA (16 types)
+    ──────────────────────────── */
+    var PROF = {
+      ISTJ: {
+        name: 'The Dependable Executor', tagline: 'Consistent, thorough, and reliable under pressure.',
+        heroAccent: 'var(--navy)',
+        excite: "Your defining strength is dependability. While others deliberate, you tend to deliver — consistently, and often under pressure. This trait underlies many effective administrators, engineers and financial professionals, and is likely to serve you well in structured, high-responsibility roles.",
+        careers: [{ t: 'Administration / Public Service', d: 'Systematic thinking suits structured public-sector roles', pct: 92, col: '#1f3a5f' },
+        { t: 'Chartered Accountancy / Finance', d: 'Detail-oriented and process-driven work', pct: 88, col: '#2f5233' },
+        { t: 'Software Engineering', d: 'Logical, systematic problem-solving', pct: 85, col: '#7a2e2e' },
+        { t: 'Medicine', d: 'Precision and reliability are core requirements', pct: 80, col: '#8a6d21' },
+        { t: 'Civil / Structural Engineering', d: 'Long-term, methodical project execution', pct: 78, col: '#495867' }],
+        celebs: [{ n: 'MS Dhoni', r: 'Former Cricket Captain', w: 'Calm, methodical decision-making under pressure' },
+        { n: 'Ratan Tata', r: 'Business Leader', w: 'Long-term, disciplined institution-building' }],
+        insights: ['You perform reliably under pressure, which is a genuine professional asset.', 'You tend to work best with clear expectations and a defined structure.', 'Building in occasional flexibility can help balance your preference for routine.', 'Others often rely on your consistency more than you may realise.']
+      },
+
+      INFJ: {
+        name: 'The Insightful Strategist', tagline: 'Combines emotional depth with long-range vision.',
+        heroAccent: 'var(--maroon)',
+        excite: "You combine emotional insight with long-range vision — a relatively uncommon combination. This profile is often associated with careers in writing, counselling, design and social-impact work, where depth of understanding and clarity of purpose are valued.",
+        careers: [{ t: 'Writing / Content Strategy', d: 'Insight translated into clear, resonant narrative', pct: 95, col: '#7a2e2e' },
+        { t: 'Psychology / Counselling', d: 'Understanding people at a meaningful level', pct: 92, col: '#2f5233' },
+        { t: 'Design / Creative Direction', d: 'Vision applied to brand and communication', pct: 88, col: '#1f3a5f' },
+        { t: 'Teaching / Academia', d: 'Guiding others toward their own insight', pct: 85, col: '#8a6d21' },
+        { t: 'Social Enterprise / Non-profit Leadership', d: 'Purpose-driven, long-term impact work', pct: 82, col: '#495867' }],
+        celebs: [{ n: 'A. R. Rahman', r: 'Composer', w: 'Depth of artistic and emotional expression' },
+        { n: 'Malala Yousafzai', r: 'Advocate, Nobel Laureate', w: 'Strong values combined with long-term vision' }],
+        insights: ['You often sense what others are feeling before it is expressed.', 'You are drawn to ideas and causes with long-term significance.', 'Because you give considerable energy to others, protecting time for yourself matters.', 'You generally think and work best with uninterrupted, quiet time.']
+      },
+
+      ENFP: {
+        name: 'The Idea Catalyst', tagline: 'Generates ideas and energy that move people to act.',
+        heroAccent: 'var(--amber)',
+        excite: "Your enthusiasm and idea-generation are genuine assets, particularly in roles that reward communication, creativity and rapid adaptation — such as media, marketing, entrepreneurship and public-facing work.",
+        careers: [{ t: 'Content Creation / Media', d: 'Natural communicator with strong idea flow', pct: 95, col: '#8a6d21' },
+        { t: 'Marketing / Brand Strategy', d: 'Persuasive, creative communication', pct: 92, col: '#7a2e2e' },
+        { t: 'Acting / Performance / Direction', d: 'Expressive energy suited to performance', pct: 90, col: '#1f3a5f' },
+        { t: 'Entrepreneurship', d: 'Idea generation paired with drive', pct: 88, col: '#2f5233' },
+        { t: 'Public Speaking / Facilitation', d: 'Natural ability to engage an audience', pct: 85, col: '#495867' }],
+        celebs: [{ n: 'Ranveer Singh', r: 'Actor', w: 'High energy, expressive, adaptable' },
+        { n: 'Priyanka Chopra', r: 'Actor, Entrepreneur', w: 'Creative reinvention across fields' }],
+        insights: ['Your energy for new ideas is a genuine strength in the right environment.', 'Keeping a record of ideas as they occur can help you act on the best ones.', 'Your enthusiasm is often persuasive — worth using deliberately.', 'Following fewer ideas through to completion, rather than starting many, is an area for growth.']
+      },
+
+      INTJ: {
+        name: 'The Systems Strategist', tagline: 'Plans several steps ahead, favouring structure over reaction.',
+        heroAccent: 'var(--forest)',
+        excite: "You tend to think several steps ahead, favouring structure and long-term strategy over reactive decision-making. This analytical, independent style is well suited to research, technology, strategy and other fields that reward systematic thinking.",
+        careers: [{ t: 'Scientific Research', d: 'Systematic approach to complex problems', pct: 95, col: '#2f5233' },
+        { t: 'Investment / Financial Strategy', d: 'Structured, long-range decision-making', pct: 90, col: '#1f3a5f' },
+        { t: 'Technology / Product Strategy', d: 'Seeing systems and possibilities clearly', pct: 92, col: '#7a2e2e' },
+        { t: 'Management Consulting', d: 'Clarity of thought applied to organisations', pct: 88, col: '#8a6d21' },
+        { t: 'Medical Research', d: 'Rigorous, independent problem-solving', pct: 85, col: '#495867' }],
+        celebs: [{ n: 'Sundar Pichai', r: 'Technology Executive', w: 'Calm, systematic, strategic thinking' },
+        { n: 'Dr. APJ Abdul Kalam', r: 'Scientist, Former President', w: 'Rigorous, visionary, and methodical' }],
+        insights: ['You often identify solutions before others have finished defining the problem.', 'You do your best thinking with uninterrupted, independent time.', 'Involving others earlier can strengthen the execution of your ideas.', 'Strategic, independent thinking of this kind is relatively uncommon.']
+      },
+
+      ESTP: {
+        name: 'The Decisive Operator', tagline: 'Acts quickly and stays composed under pressure.',
+        heroAccent: 'var(--amber)',
+        excite: "You are oriented toward action and real-time decision-making, and often perform well under pressure where others hesitate. This suits fast-paced, hands-on fields such as business, emergency services, sport and operations.",
+        careers: [{ t: 'Business Operations / Sales', d: 'Fast, pragmatic decision-making', pct: 92, col: '#8a6d21' },
+        { t: 'Entrepreneurship', d: 'Bold, action-oriented execution', pct: 90, col: '#7a2e2e' },
+        { t: 'Emergency Medicine', d: 'Composure and speed under pressure', pct: 88, col: '#1f3a5f' },
+        { t: 'Aviation / Defence Services', d: 'Quick, high-stakes decision-making', pct: 85, col: '#2f5233' },
+        { t: 'Sports / Sports Management', d: 'Performance under real-time pressure', pct: 80, col: '#495867' }],
+        celebs: [{ n: 'Virat Kohli', r: 'Cricketer', w: 'Decisive, competitive, performs under pressure' },
+        { n: 'Akshay Kumar', r: 'Actor', w: 'High-energy, action-oriented approach' }],
+        insights: ['You solve problems through action rather than prolonged deliberation.', 'You tend to remain composed in situations that unsettle others.', 'Building in time to evaluate decisions can complement your fast decision-making.', 'Confidence, used deliberately, is one of your clearest strengths.']
+      },
+
+      ISFP: {
+        name: 'The Authentic Creator', tagline: 'A strong aesthetic sense paired with quiet independence.',
+        heroAccent: 'var(--maroon)',
+        excite: "You have a strong aesthetic sensibility and a preference for authentic self-expression over rigid structure. This is a common profile among those drawn to design, the arts, media production and other creative fields.",
+        careers: [{ t: 'Design (Fashion / Graphic / Product)', d: 'Strong visual and aesthetic instincts', pct: 95, col: '#7a2e2e' },
+        { t: 'Photography / Videography', d: 'Capturing emotion and composition naturally', pct: 92, col: '#1f3a5f' },
+        { t: 'Music / Composition', d: 'Authentic emotional expression', pct: 90, col: '#2f5233' },
+        { t: 'Performance / Dance', d: 'Comfortable working in the present moment', pct: 88, col: '#8a6d21' },
+        { t: 'Interior / Spatial Design', d: 'Creating considered, meaningful spaces', pct: 85, col: '#495867' }],
+        celebs: [{ n: 'Arijit Singh', r: 'Singer', w: 'Emotionally authentic artistic expression' },
+        { n: 'Deepika Padukone', r: 'Actor', w: 'Graceful, understated, authentic presence' }],
+        insights: ['You experience and express emotion more deeply than you may show outwardly.', 'Your creative instincts are a genuine asset, worth developing further.', 'You tend to do your best work with autonomy rather than rigid direction.', 'Trusting your own aesthetic judgment is generally well-founded.']
+      },
+
+      ENFJ: {
+        name: 'The Natural Mentor', tagline: 'Combines warmth with the ability to organise and motivate others.',
+        heroAccent: 'var(--navy)',
+        excite: "You combine warmth with a natural ability to organise and motivate others — a profile frequently seen among effective teachers, leaders and communicators.",
+        careers: [{ t: 'Teaching / Education Leadership', d: 'Bringing out the best in others', pct: 95, col: '#1f3a5f' },
+        { t: 'Public Speaking / Facilitation', d: 'Words that genuinely influence people', pct: 92, col: '#7a2e2e' },
+        { t: 'Public Policy / Social Leadership', d: 'Leading with both empathy and strategy', pct: 90, col: '#2f5233' },
+        { t: 'Human Resources / Coaching', d: 'Developing people intentionally', pct: 88, col: '#8a6d21' },
+        { t: 'Media / Broadcast Presenting', d: 'Warmth that connects with an audience', pct: 85, col: '#495867' }],
+        celebs: [{ n: 'Sachin Tendulkar', r: 'Former Cricketer', w: 'Leads by example, widely respected' },
+        { n: 'Barack Obama', r: 'Former US President', w: 'Communicative, people-centred leadership' }],
+        insights: ['People often confide in you, which reflects genuine trust.', 'You have a natural capacity to encourage and motivate others.', 'Ensure you are also attending to your own needs, not only others.', 'Your empathy is an asset, particularly in leadership contexts.']
+      },
+
+      INTP: {
+        name: 'The Independent Analyst', tagline: 'Driven by curiosity and a need to understand first principles.',
+        heroAccent: 'var(--forest)',
+        excite: "You are driven by curiosity and a need to understand underlying principles, often preferring depth over breadth. This suits research, engineering, data analysis, law and other fields that reward rigorous, independent thinking.",
+        careers: [{ t: 'Research Science', d: 'Sustained curiosity applied rigorously', pct: 95, col: '#2f5233' },
+        { t: 'Software / AI Engineering', d: 'Enjoys working with complex systems', pct: 92, col: '#1f3a5f' },
+        { t: 'Data Science / Analytics', d: 'Finding structure within complexity', pct: 90, col: '#7a2e2e' },
+        { t: 'Law', d: 'Rigorous, logical argument construction', pct: 85, col: '#8a6d21' },
+        { t: 'Architecture / Engineering', d: 'Structural and systems-level thinking', pct: 82, col: '#495867' }],
+        celebs: [{ n: 'Dr. APJ Abdul Kalam', r: 'Scientist, Former President', w: 'Deeply curious, rigorous thinker' },
+        { n: 'Sundar Pichai', r: 'Technology Executive', w: 'Analytical, systems-oriented approach' }],
+        insights: ['You tend to understand ideas at a level of depth others may not reach.', 'Simplifying your explanations can help others follow your reasoning.', 'Sustained curiosity of this kind is a genuine long-term asset.', 'You generally work best with unstructured time to think independently.']
+      },
+
+      ESFP: {
+        name: 'The Engaging Performer', tagline: 'Brings energy and warmth to any environment.',
+        heroAccent: 'var(--amber)',
+        excite: "You bring energy and warmth to any environment, and tend to connect easily with others. This suits performance, media, hospitality and other people-facing, expressive fields.",
+        careers: [{ t: 'Acting / Performance', d: 'Natural comfort in front of an audience', pct: 95, col: '#7a2e2e' },
+        { t: 'Music / Dance / Entertainment', d: 'Energy that engages an audience', pct: 92, col: '#1f3a5f' },
+        { t: 'Media / Content Presenting', d: 'Genuine, relatable on-camera presence', pct: 90, col: '#8a6d21' },
+        { t: 'Event Management / Hospitality', d: 'Comfortable creating engaging experiences', pct: 88, col: '#2f5233' },
+        { t: 'Tourism / Travel Industry', d: 'Enthusiasm for new experiences', pct: 85, col: '#495867' }],
+        celebs: [{ n: 'Ranveer Singh', r: 'Actor', w: 'Spontaneous, expressive, performance-oriented' },
+        { n: 'Hardik Pandya', r: 'Cricketer', w: 'Bold, high-visibility, confident presence' }],
+        insights: ['You build rapport with new people quickly.', 'Your positive outlook tends to be genuinely felt by others.', 'You are comfortable operating in the present moment, which is less common than it seems.', 'Channelling your energy into a specific creative or performance outlet can be productive.']
+      },
+
+      ISFJ: {
+        name: 'The Attentive Support', tagline: 'Reliable, considerate, and attentive to others\' needs.',
+        heroAccent: 'var(--forest)',
+        excite: "You are conscientious and attentive to others' needs, often the person others rely on in both practical and emotional terms. This is a strong foundation for careers in healthcare, education and social work.",
+        careers: [{ t: 'Nursing / Medicine', d: 'Caring, attentive, and precise under care', pct: 95, col: '#2f5233' },
+        { t: 'Teaching / School Counselling', d: 'Nurturing others\' growth carefully', pct: 92, col: '#1f3a5f' },
+        { t: 'Social Work', d: 'Protecting and supporting those in need', pct: 88, col: '#7a2e2e' },
+        { t: 'Healthcare Administration', d: 'Genuine care applied systematically', pct: 85, col: '#8a6d21' },
+        { t: 'Family / Child Advocacy Law', d: 'Advocating carefully for others', pct: 82, col: '#495867' }],
+        celebs: [{ n: 'Rahul Dravid', r: 'Former Cricketer, Coach', w: 'Dependable, understated mentorship' },
+        { n: 'Lata Mangeshkar', r: 'Singer', w: 'Devoted, consistent, long-serving craft' }],
+        insights: ['You are attentive to details others often overlook, including personal ones.', 'You give considerable support to others — ensure this is reciprocated.', 'Your reliability and loyalty are genuine long-term strengths.', 'You tend to do your best work in stable, trust-based environments.']
+      },
+
+      ESTJ: {
+        name: 'The Structured Leader', tagline: 'Brings order to ambiguity and takes charge naturally.',
+        heroAccent: 'var(--navy)',
+        excite: "You bring order to ambiguity and tend to take charge naturally, favouring clear structure and accountability. This suits management, administration, law and operational leadership roles.",
+        careers: [{ t: 'Public Administration', d: 'Leading systems and people effectively', pct: 95, col: '#1f3a5f' },
+        { t: 'Business Management', d: 'Running organisations with clear structure', pct: 92, col: '#7a2e2e' },
+        { t: 'Law / Judiciary', d: 'Fairness applied through clear structure', pct: 90, col: '#2f5233' },
+        { t: 'Project / Programme Management', d: 'Delivering to plan, consistently', pct: 88, col: '#8a6d21' },
+        { t: 'Education Administration', d: 'Building systems where others can thrive', pct: 85, col: '#495867' }],
+        celebs: [{ n: 'Sourav Ganguly', r: 'Former Cricket Captain', w: 'Decisive, structured leadership' },
+        { n: 'Indira Gandhi', r: 'Former Prime Minister', w: 'Commanding, organised leadership style' }],
+        insights: ['You naturally take charge when structure is lacking.', 'You hold yourself and others to consistent standards.', 'Recognising different working styles in others can strengthen collaboration.', 'Directness is an asset when balanced with warmth.']
+      },
+
+      ENTP: {
+        name: 'The Adaptive Debater', tagline: 'Examines ideas from multiple angles, comfortable challenging convention.',
+        heroAccent: 'var(--maroon)',
+        excite: "You enjoy examining ideas from multiple angles and are comfortable challenging convention. This suits law, journalism, entrepreneurship and strategy work, where debate and adaptability are genuine assets.",
+        careers: [{ t: 'Law / Legal Strategy', d: 'Argument construction and quick thinking', pct: 95, col: '#7a2e2e' },
+        { t: 'Entrepreneurship / Venture Building', d: 'Spotting opportunity ahead of others', pct: 92, col: '#1f3a5f' },
+        { t: 'Journalism', d: 'Asking the questions others avoid', pct: 90, col: '#2f5233' },
+        { t: 'Policy Analysis / Commentary', d: 'Cutting through complexity quickly', pct: 88, col: '#8a6d21' },
+        { t: 'Product / Technology Strategy', d: 'Seeing where a product should go next', pct: 85, col: '#495867' }],
+        celebs: [{ n: 'Aamir Khan', r: 'Actor, Filmmaker', w: 'Challenges convention deliberately' },
+        { n: 'Elon Musk', r: 'Entrepreneur', w: 'Publicly debates and challenges norms' }],
+        insights: ['You are comfortable debating positions, including ones you may privately agree with.', 'Your best ideas often emerge through discussion rather than solitary reflection.', 'Channel your instinct to challenge ideas toward constructive outcomes.', 'You may disengage without ongoing intellectual challenge.']
+      },
+
+      ESFJ: {
+        name: 'The Community Builder', tagline: 'Strong interpersonal awareness and a talent for inclusion.',
+        heroAccent: 'var(--amber)',
+        excite: "You have strong interpersonal awareness and a talent for making others feel valued — a profile well suited to healthcare, education, event management and community-facing roles.",
+        careers: [{ t: 'Medicine / Paediatrics', d: 'Warm, attentive patient care', pct: 95, col: '#8a6d21' },
+        { t: 'Teaching / School Counselling', d: 'Making students feel safe and valued', pct: 92, col: '#1f3a5f' },
+        { t: 'Event Management / PR', d: 'Bringing people together effectively', pct: 90, col: '#2f5233' },
+        { t: 'Psychology / Therapy', d: 'Warmth that helps others open up', pct: 88, col: '#7a2e2e' },
+        { t: 'Broadcast Presenting / Interviewing', d: 'Making others comfortable on camera', pct: 85, col: '#495867' }],
+        celebs: [{ n: 'Kajol', r: 'Actor', w: 'Warm, expressive, connects easily' },
+        { n: 'Ratan Tata', r: 'Business Leader', w: 'Genuine care for people and community' }],
+        insights: ['You build connections with new people quickly and genuinely.', 'Your attentiveness to others is generally well received.', 'Do not take it personally if warmth is not always reciprocated in kind.', 'You tend to build and sustain communities effectively.']
+      },
+
+      INFP: {
+        name: 'The Principled Creative', tagline: 'Guided by a strong internal value system and imagination.',
+        heroAccent: 'var(--maroon)',
+        excite: "You are guided by a strong internal value system and creative imagination, often drawn to work with meaning and emotional depth. Writing, counselling, design and advocacy are common fits for this profile.",
+        careers: [{ t: 'Writing / Poetry / Publishing', d: 'Deep emotion translated into narrative', pct: 95, col: '#7a2e2e' },
+        { t: 'Graphic Design / Animation', d: 'Imagination expressed visually', pct: 92, col: '#1f3a5f' },
+        { t: 'Psychology / Counselling', d: 'Genuine interest in the inner lives of others', pct: 90, col: '#2f5233' },
+        { t: 'Music Composition / Lyric Writing', d: 'Turning feeling into art', pct: 88, col: '#8a6d21' },
+        { t: 'Non-profit / Advocacy Work', d: 'Values-driven, purposeful work', pct: 85, col: '#495867' }],
+        celebs: [{ n: 'Lata Mangeshkar', r: 'Singer', w: 'Deep emotion channelled through art' },
+        { n: 'Malala Yousafzai', r: 'Advocate, Nobel Laureate', w: 'Values-driven, quietly resolute' }],
+        insights: ['You experience emotion more deeply than you typically express.', 'Your imagination and values are genuine long-term assets — worth documenting.', 'Advocating for your values is likely to serve you well, even when uncomfortable.', 'You require time alone to recover energy, which is a legitimate need.']
+      },
+
+      ISTP: {
+        name: 'The Practical Problem-Solver', tagline: 'Calm under pressure, with a hands-on understanding of systems.',
+        heroAccent: 'var(--forest)',
+        excite: "You remain composed under pressure and have a practical, hands-on understanding of how things work. This suits engineering, technical trades, aviation and other fields that reward calm, methodical problem-solving.",
+        careers: [{ t: 'Mechanical / Electrical Engineering', d: 'Intuitive understanding of systems', pct: 95, col: '#2f5233' },
+        { t: 'Aviation / Defence Services', d: 'Composure and technical skill combined', pct: 92, col: '#1f3a5f' },
+        { t: 'Surgery / Emergency Medicine', d: 'Precise, calm work under pressure', pct: 90, col: '#7a2e2e' },
+        { t: 'Cybersecurity', d: 'Methodical, logical problem-solving', pct: 88, col: '#8a6d21' },
+        { t: 'Applied / Motorsport Engineering', d: 'Hands-on, technical performance work', pct: 85, col: '#495867' }],
+        celebs: [{ n: 'Jasprit Bumrah', r: 'Cricketer', w: 'Calm, technically precise under pressure' },
+        { n: 'Elon Musk', r: 'Entrepreneur', w: 'Engineering-first problem-solving approach' }],
+        insights: ['You solve problems through direct action rather than extended analysis.', 'You tend to remain calm during situations that unsettle others.', 'You generally learn more effectively through direct practice than through theory.', 'Sharing your reasoning more openly may increase others\' confidence in your judgment.']
+      },
+
+      ENTJ: {
+        name: 'The Strategic Executive', tagline: 'Decisive, ambitious, and comfortable taking charge.',
+        heroAccent: 'var(--navy)',
+        excite: "You are decisive, strategic and comfortable taking charge, often gravitating toward leadership roles. This suits business management, law, consulting and other fields that reward long-range planning and assertive execution.",
+        careers: [{ t: 'Business Leadership / Entrepreneurship', d: 'Building and scaling organisations', pct: 95, col: '#1f3a5f' },
+        { t: 'Public Policy / Government', d: 'Strategic, large-scale decision-making', pct: 92, col: '#7a2e2e' },
+        { t: 'Investment Management', d: 'Strategic allocation of resources', pct: 90, col: '#2f5233' },
+        { t: 'Law', d: 'Commanding, logical argument', pct: 88, col: '#8a6d21' },
+        { t: 'Academic / Institutional Leadership', d: 'Long-term institutional strategy', pct: 85, col: '#495867' }],
+        celebs: [{ n: 'Mukesh Ambani', r: 'Business Leader', w: 'Strategic, large-scale execution' },
+        { n: 'Indira Gandhi', r: 'Former Prime Minister', w: 'Decisive, commanding leadership' }],
+        insights: ['You tend to see the intended outcome clearly before others have started.', 'Balancing confidence with openness to other perspectives will serve you well.', 'You are motivated by ambitious, long-range goals.', 'Turning vision into execution is a genuine and relatively rare strength.']
+      }
+    };
+
+    /* ────────────────────────────
+       STYLE / STRENGTH / ENGAGEMENT INFO
+    ──────────────────────────── */
+    var styleInfo = {
+      visual: { name: 'Visual Learner', desc: 'You understand material best when it is presented visually — diagrams, charts and visual models help you retain and process information most effectively.' },
+      auditory: { name: 'Auditory Learner', desc: 'You learn best through hearing and speaking — discussion, explanation and verbal repetition are your most effective study tools.' },
+      kinesthetic: { name: 'Hands-On Learner', desc: 'You learn most effectively through direct practice and application. Theory alone is generally less effective for you than active, applied work.' },
+      reading: { name: 'Reading & Writing Learner', desc: 'You learn best through structured reading and writing — detailed notes and written summaries support your understanding well.' }
+    };
+    var strInfo = {
+      analytical: { n: 'Analytical Thinking' }, creative: { n: 'Creative Thinking' }, social: { n: 'Interpersonal Skill' },
+      organised: { n: 'Organisation' }, practical: { n: 'Practical / Applied Skill' }, empathy: { n: 'Empathy' },
+      focus: { n: 'Sustained Focus' }, memory: { n: 'Attention to Detail' }
+    };
+    var engInfo = {
+      challenge: { n: 'Problem-Solving', d: 'You engage most when facing a genuine problem or challenge to work through.' },
+      story: { n: 'Narrative Learning', d: 'You engage most through stories, context and real-world examples.' },
+      competition: { n: 'Competitive Achievement', d: 'You engage most through competitive formats with clear recognition.' },
+      create: { n: 'Creative Expression', d: 'You engage most when given room to create and express original ideas.' },
+      purpose: { n: 'Purpose-Driven Work', d: 'You engage most when the work connects clearly to real-world relevance.' },
+      mastery: { n: 'Mastery-Oriented', d: 'You engage most when deeply mastering a skill or subject area.' },
+      social: { n: 'Collaborative Learning', d: 'You engage most through teamwork and collaborative problem-solving.' },
+      impact: { n: 'Impact-Driven', d: 'You engage most when your work visibly helps others or solves a real problem.' },
+      choice: { n: 'Autonomy-Driven', d: 'You engage most when given freedom and choice in your approach.' }
+    };
+    var tlData = [
+      { label: 'Right Now', title: 'Understand yourself', body: 'Use this report to understand how you learn best, and let it inform your study approach going forward.', col: '#1f3a5f' },
+      { label: 'After Class 12', title: 'Choose your stream or course deliberately', body: 'Use your personality and career-match results, alongside academic performance and interests, to inform your choice of stream or degree.', col: '#2f5233' },
+      { label: 'College Years', title: 'Explore deliberately', body: 'Use clubs, internships and projects to test the career directions suggested by this report against real experience.', col: '#8a6d21' },
+      { label: 'Early Career', title: 'Seek roles that match your strengths', body: 'Roles that draw on your natural strengths tend to be more sustainable and satisfying than those that require you to work against your grain.', col: '#7a2e2e' },
+      { label: 'Long Term', title: 'Continue building self-awareness', body: 'Self-awareness of this kind is a durable professional asset. Revisit and refine your understanding of your own strengths as you gain experience.', col: '#495867' }
+    ];
+
+    /* ────────────────────────────
+       NAVIGATION
+    ──────────────────────────── */
+    function showScreen(id) {
+      var all = document.querySelectorAll('.sc');
+      for (var k = 0; k < all.length; k++)all[k].classList.remove('on');
+      document.getElementById(id).classList.add('on');
+      window.scrollTo(0, 0);
+    }
+
+    function goOnboard() { showScreen('sob'); }
+
+    function restart() {
+      student = { name: '', email: '', age: null, level: '', institution: '', phone: '' };
+      answers = {}; currentQ = 0;
+      document.getElementById('in-name').value = '';
+      document.getElementById('in-email').value = '';
+      document.getElementById('in-age').value = '';
+      document.getElementById('in-level').value = '';
+      document.getElementById('in-institution').value = '';
+      document.getElementById('in-phone').value = '';
+      showScreen('sl');
+    }
+
+    /* ────────────────────────────
+       DETAILS FORM VALIDATION
+    ──────────────────────────── */
+    function validEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+
+    function startQuiz() {
+      var name = document.getElementById('in-name').value.trim();
+      var email = document.getElementById('in-email').value.trim();
+      var age = document.getElementById('in-age').value.trim();
+      var level = document.getElementById('in-level').value;
+      var institution = document.getElementById('in-institution').value.trim();
+      var phone = document.getElementById('in-phone').value.trim();
+      var err = document.getElementById('ob-err');
+
+      if (!name || !email || !age || !level || !institution) {
+        err.textContent = 'Please complete all required fields marked with *.';
+        return;
+      }
+      if (!validEmail(email)) {
+        err.textContent = 'Please enter a valid email address.';
+        return;
+      }
+      if (isNaN(age) || age < 10 || age > 30) {
+        err.textContent = 'Please enter a valid age between 10 and 30.';
+        return;
+      }
+      err.textContent = '';
+      student = { name: name, email: email, age: parseInt(age), level: level, institution: institution, phone: phone };
+      currentQ = 0;
+      showScreen('sq');
+      renderQ();
+    }
+
+    /* ────────────────────────────
+       QUIZ
+    ──────────────────────────── */
+    function renderQ() {
+      var q = questions[currentQ];
+      var dc = DC[q.domain];
+      var pct = Math.round((currentQ / questions.length) * 100);
+      var fill = document.getElementById('qpfl');
+      fill.style.width = pct + '%'; fill.style.background = dc.prog;
+      document.getElementById('qptxt').textContent = 'Question ' + (currentQ + 1) + ' of ' + questions.length;
+      var pill = document.getElementById('dpill');
+      pill.textContent = dc.label; pill.style.background = dc.bg; pill.style.color = dc.text;
+
+      var body = document.getElementById('qmain');
+      var ans = answers[q.id];
+
+      var optsHtml = '';
+      if (q.type === 'choice') {
+        var ltrs = ['A', 'B', 'C', 'D'];
+        optsHtml = '<div class="qopts">';
+        for (var k = 0; k < q.options.length; k++) {
+          var opt = q.options[k];
+          var isAns = (ans === opt.val);
+          var bStyle = isAns ? ('border-color:' + dc.color + ';background:' + dc.bg + ';') : '';
+          var lStyle = isAns ? ('background:' + dc.color + ';color:white;') : '';
+          optsHtml += '<button class="qopt" onclick="pickOpt(\'' + q.id + '\',\'' + opt.val + '\',this)" data-val="' + opt.val + '" style="' + bStyle + '">';
+          optsHtml += '<span class="oltr" style="' + lStyle + '">' + ltrs[k] + '</span>';
+          optsHtml += '<span>' + opt.text + '</span>';
+          optsHtml += '</button>';
+        }
+        optsHtml += '</div>';
+      } else {
+        optsHtml = '<div class="scalewrap"><div class="scrow">';
+        for (var n = 1; n <= 5; n++) {
+          var isSel = (ans == n);
+          var sStyle = isSel ? ('border-color:' + dc.color + ';background:' + dc.bg + ';color:' + dc.color + ';') : '';
+          optsHtml += '<button class="scbtn" onclick="pickScale(\'' + q.id + '\',' + n + ',this)" style="' + sStyle + '">' + n + '</button>';
+        }
+        optsHtml += '</div><div class="sclabs"><span>' + q.scaleLabels[0] + '</span><span>' + q.scaleLabels[1] + '</span></div></div>';
+      }
+
+      body.innerHTML = '<div style="width:100%;text-align:center;">'
+        + '<div class="qdbadge" style="background:' + dc.bg + ';color:' + dc.text + '">' + dc.label + '</div>'
+        + '<h2 class="qtxt">' + q.text + '</h2>'
+        + optsHtml
+        + '</div>';
+
+      document.getElementById('btn-qnxt').disabled = !ans;
+    }
+
+    function pickOpt(qid, val, btn) {
+      answers[qid] = val;
+      var dc = DC[questions[currentQ].domain];
+      var opts = btn.closest('.qopts').querySelectorAll('.qopt');
+      for (var k = 0; k < opts.length; k++) {
+        opts[k].style.borderColor = '#ded8ca'; opts[k].style.background = '#fff';
+        var l = opts[k].querySelector('.oltr');
+        if (l) { l.style.background = '#f2efe6'; l.style.color = 'var(--muted)'; }
+      }
+      btn.style.borderColor = dc.color; btn.style.background = dc.bg;
+      var bl = btn.querySelector('.oltr');
+      if (bl) { bl.style.background = dc.color; bl.style.color = 'white'; }
+      document.getElementById('btn-qnxt').disabled = false;
+    }
+
+    function pickScale(qid, val, btn) {
+      answers[qid] = val;
+      var dc = DC[questions[currentQ].domain];
+      var row = btn.closest('.scrow').querySelectorAll('.scbtn');
+      for (var k = 0; k < row.length; k++) { row[k].style.borderColor = '#ded8ca'; row[k].style.background = '#fff'; row[k].style.color = 'var(--ink)'; }
+      btn.style.borderColor = dc.color; btn.style.background = dc.bg; btn.style.color = dc.color;
+      document.getElementById('btn-qnxt').disabled = false;
+    }
+
+    function qNext() {
+      if (currentQ < questions.length - 1) { currentQ++; renderQ(); }
+      else { runProc(); }
+    }
+    function qBack() {
+      if (currentQ > 0) { currentQ--; renderQ(); }
+      else { showScreen('sob'); }
+    }
+
+    /* ────────────────────────────
+       PROCESSING
+    ──────────────────────────── */
+    function runProc() {
+      showScreen('spr');
+      var steps = ['ps1', 'ps2', 'ps3', 'ps4', 'ps5', 'ps6'];
+      var si = 0;
+      var iv = setInterval(function () {
+        if (si > 0) { var prev = document.getElementById(steps[si - 1]); if (prev) prev.className = 'prstep dn'; }
+        if (si < steps.length) { var cur = document.getElementById(steps[si]); if (cur) cur.className = 'prstep act'; si++; }
+        else { clearInterval(iv); setTimeout(buildProfile, 500); }
+      }, 450);
+    }
+
+    /* ────────────────────────────
+       COMPUTE SCORES
+    ──────────────────────────── */
+    function compute() {
+      var dim = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+      var pids = ['P1', 'P2', 'P3', 'P4', 'P6', 'P7', 'P9', 'P10'];
+      for (var k = 0; k < pids.length; k++) {
+        var qobj = null;
+        for (var j = 0; j < questions.length; j++) { if (questions[j].id === pids[k]) { qobj = questions[j]; break; } }
+        var aval = answers[pids[k]];
+        if (aval && qobj) {
+          for (var j = 0; j < qobj.options.length; j++) { if (qobj.options[j].val === aval) { dim[aval]++; break; } }
+        }
+      }
+      var p5 = parseInt(answers['P5'] || 3);
+      if (p5 >= 4) dim.E++; else if (p5 <= 2) dim.I++; else { dim.E += 0.5; dim.I += 0.5; }
+      var p8 = parseInt(answers['P8'] || 3);
+      if (p8 >= 4) dim.P++; else if (p8 <= 2) dim.J++; else { dim.P += 0.5; dim.J += 0.5; }
+
+      var E = dim.E >= dim.I ? 'E' : 'I';
+      var S = dim.S >= dim.N ? 'S' : 'N';
+      var T = dim.T >= dim.F ? 'T' : 'F';
+      var J = dim.J >= dim.P ? 'J' : 'P';
+      var mbti = E + S + T + J;
+
+      var ls = { visual: 0, auditory: 0, kinesthetic: 0, reading: 0 };
+      var lids = ['L1', 'L2', 'L4', 'L5', 'L7', 'L8', 'L9'];
+      for (var k = 0; k < lids.length; k++) { var av = answers[lids[k]]; if (av && ls[av] !== undefined) ls[av]++; }
+      var l3 = parseInt(answers['L3'] || 3); if (l3 >= 4) ls.auditory++; else if (l3 <= 2) ls.reading++;
+      var l6 = parseInt(answers['L6'] || 3); if (l6 >= 4) ls.reading++; else if (l6 <= 2) ls.auditory++;
+      var l10 = parseInt(answers['L10'] || 3); if (l10 >= 4) ls.kinesthetic++; else if (l10 <= 2) ls.reading++;
+      var lsArr = Object.keys(ls).sort(function (a, b) { return ls[b] - ls[a]; });
+      var topLS = lsArr[0];
+
+      var st = { analytical: 0, creative: 0, social: 0, organised: 0, practical: 0, empathy: 0, focus: 0, memory: 0 };
+      var sids = ['S1', 'S2', 'S4', 'S5', 'S6', 'S8', 'S9'];
+      for (var k = 0; k < sids.length; k++) { var av = answers[sids[k]]; if (av && st[av] !== undefined) st[av]++; }
+      var s3 = parseInt(answers['S3'] || 3); if (s3 >= 4) { st.social++; st.empathy++; }
+      var s7 = parseInt(answers['S7'] || 3); if (s7 >= 4) st.focus++;
+      var s10 = parseInt(answers['S10'] || 3); if (s10 >= 4) st.memory++;
+      var stArr = Object.keys(st).sort(function (a, b) { return st[b] - st[a]; });
+      var topST = stArr[0];
+      var topStrArr = stArr.filter(function (k) { return st[k] > 0; }).slice(0, 4);
+
+      var eng = { challenge: 0, story: 0, competition: 0, create: 0, purpose: 0, mastery: 0, social: 0, impact: 0, choice: 0 };
+      var eids = ['E1', 'E4', 'E5', 'E7', 'E8', 'E10'];
+      for (var k = 0; k < eids.length; k++) { var av = answers[eids[k]]; if (av && eng[av] !== undefined) eng[av]++; }
+      var e6 = parseInt(answers['E6'] || 3); if (e6 >= 4) eng.competition++;
+      var e9 = parseInt(answers['E9'] || 3); if (e9 >= 4) eng.social++;
+      var e3 = parseInt(answers['E3'] || 3); if (e3 >= 4) eng.purpose++;
+      var engArr = Object.keys(eng).sort(function (a, b) { return eng[b] - eng[a]; });
+      var topEng = engArr[0];
+
+      var pcts = {
+        EI: Math.round((dim.E / Math.max(dim.E + dim.I, 1)) * 100),
+        SN: Math.round((dim.S / Math.max(dim.S + dim.N, 1)) * 100),
+        TF: Math.round((dim.T / Math.max(dim.T + dim.F, 1)) * 100),
+        JP: Math.round((dim.J / Math.max(dim.J + dim.P, 1)) * 100)
+      };
+
+      return { mbti: mbti, topLS: topLS, topST: topST, topEng: topEng, pcts: pcts, E: E, S: S, T: T, J: J, topStrArr: topStrArr };
+    }
+
+    /* ────────────────────────────
+       BUILD PROFILE
+    ──────────────────────────── */
+    function buildProfile() {
+      var p = compute();
+      var pr = PROF[p.mbti] || PROF['INFJ'];
+
+      var dimRows = [
+        { l: 'Energy', a: p.E === 'E' ? 'Extraverted' : 'Introverted', pct: p.E === 'E' ? p.pcts.EI : 100 - p.pcts.EI },
+        { l: 'Information', a: p.S === 'S' ? 'Practical' : 'Conceptual', pct: p.S === 'S' ? p.pcts.SN : 100 - p.pcts.SN },
+        { l: 'Decisions', a: p.T === 'T' ? 'Logical' : 'Value-based', pct: p.T === 'T' ? p.pcts.TF : 100 - p.pcts.TF },
+        { l: 'Planning', a: p.J === 'J' ? 'Structured' : 'Flexible', pct: p.J === 'J' ? p.pcts.JP : 100 - p.pcts.JP }
+      ];
+      var dimHtml = '';
+      for (var k = 0; k < dimRows.length; k++) {
+        var d = dimRows[k];
+        dimHtml += '<div class="phdim"><div class="phdtop"><span>' + d.l + '</span><span>' + d.a + ' · ' + d.pct + '%</span></div><div class="phdtr"><div class="phdfl" style="width:' + d.pct + '%"></div></div></div>';
+      }
+
+      document.getElementById('ph-area').innerHTML =
+        '<div class="phero">'
+        + '<div style="max-width:900px;margin:0 auto;">'
+        + '<div class="phnav"><div class="phlogo">Socio Potents</div><button class="btn-rtk" onclick="restart()">Start Over</button></div>'
+        + '<div class="phchip">' + p.mbti + ' Personality Type</div>'
+        + '<div class="phname">Report prepared for ' + student.name + '</div>'
+        + '<h1 class="phtitle">' + pr.name + '</h1>'
+        + '<p class="phtag">' + pr.tagline + '</p>'
+        + '<div class="phmbti">' + p.mbti + '</div>'
+        + '<div class="phdims">' + dimHtml + '</div>'
+        + '</div></div>';
+
+      var lsI = styleInfo[p.topLS] || styleInfo.visual;
+      var stI = strInfo[p.topST] || { n: 'Versatile Skillset' };
+      var engI = engInfo[p.topEng] || { n: 'Varied Motivation', d: 'Your engagement is drawn from a mix of factors rather than one dominant driver.' };
+
+      var strTagsHtml = '';
+      var tagBgCols = [['#f6efdd', '#8a6d21'], ['#e9eef4', '#1f3a5f'], ['#e9f0e8', '#2f5233'], ['#f5e8e6', '#7a2e2e']];
+      for (var k = 0; k < p.topStrArr.length; k++) {
+        var sk = p.topStrArr[k];
+        var si2 = strInfo[sk] || { n: sk };
+        var bc = tagBgCols[k % 4];
+        strTagsHtml += '<span class="strtag" style="background:' + bc[0] + ';color:' + bc[1] + '">' + si2.n + '</span>';
+      }
+      if (!strTagsHtml) strTagsHtml = '<span class="strtag" style="background:#e9eef4;color:#1f3a5f">Versatile Skillset</span>';
+
+      var insHtml = '';
+      for (var k = 0; k < pr.insights.length; k++) {
+        insHtml += '<li class="insitem"><span class="insico">' + (k + 1) + '</span><span class="instxt">' + pr.insights[k] + '</span></li>';
+      }
+
+      var celebHtml = '';
+      for (var k = 0; k < pr.celebs.length; k++) {
+        var cc = pr.celebs[k];
+        celebHtml += '<div class="ccard">'
+          + '<div class="cimgw"><div class="cfb">' + cc.n.charAt(0) + '</div></div>'
+          + '<div class="cname">' + cc.n + '</div>'
+          + '<div class="crole">' + cc.r + '</div>'
+          + '<div class="cmatch" style="background:#f2efe6;color:var(--charcoal)">' + cc.w + '</div>'
+          + '</div>';
+      }
+
+      var carHtml = '';
+      for (var k = 0; k < pr.careers.length; k++) {
+        var cc = pr.careers[k];
+        carHtml += '<div class="carcard">'
+          + '<div class="carttl">' + cc.t + '</div>'
+          + '<div class="cardsc">' + cc.d + '</div>'
+          + '<div class="carbar"><div class="carbfl" style="width:' + cc.pct + '%;background:' + cc.col + '"></div></div>'
+          + '<div class="carpct" style="color:' + cc.col + '">' + cc.pct + '% alignment</div>'
+          + '</div>';
+      }
+
+      var tlHtml = '';
+      for (var k = 0; k < tlData.length; k++) {
+        var t = tlData[k];
+        tlHtml += '<div class="tlitem">'
+          + '<div class="tldot" style="background:' + t.col + '"></div>'
+          + '<div class="tllbl" style="color:' + t.col + '">' + t.label + '</div>'
+          + '<div class="tlttl">' + t.title + '</div>'
+          + '<div class="tlbody">' + t.body + '</div>'
+          + '</div>';
+      }
+
+      var tips = getStudyTips(p);
+      var tipHtml = '';
+      for (var k = 0; k < tips.length; k++) {
+        var t = tips[k];
+        tipHtml += '<div class="stip"><div class="stitl">' + t.title + '</div><div class="stbdy">' + t.body + '</div></div>';
+      }
+
+      var mbtiDesc = getMBTIDesc(p);
+
+      document.getElementById('pbody').innerHTML =
+        '<div class="leadp" style="margin-top:1.5rem">' + pr.excite + '</div>'
+
+        + '<div class="sectitle"><span class="n">01</span> Personality &amp; Learning Style</div>'
+        + '<div class="cgrid">'
+        + '<div class="pcard"><div class="clbl">Personality Type</div><div class="cttl">' + pr.name + '</div><div class="cbody">' + mbtiDesc + '</div></div>'
+        + '<div class="pcard"><div class="clbl">Learning Style</div><div class="cttl">' + lsI.name + '</div><div class="cbody">' + lsI.desc + '</div></div>'
+        + '</div>'
+
+        + '<div class="sectitle"><span class="n">02</span> Natural Strengths</div>'
+        + '<div class="pcard" style="margin-bottom:1.5rem;">'
+        + '<div class="clbl">Primary Strength</div>'
+        + '<div class="cttl">' + stI.n + '</div>'
+        + '<div class="cbody">Your responses indicate the following combination of natural strengths:</div>'
+        + '<div class="strtags">' + strTagsHtml + '</div>'
+        + '</div>'
+
+        + '<div class="sectitle"><span class="n">03</span> Motivation &amp; Engagement Style</div>'
+        + '<div class="pcard" style="margin-bottom:1.5rem;"><div class="clbl">Primary Driver</div><div class="cttl">' + engI.n + '</div><div class="cbody">' + engI.d + '</div></div>'
+
+        + '<div class="sectitle"><span class="n">04</span> Key Developmental Insights</div>'
+        + '<div class="pcard" style="margin-bottom:1.5rem;"><ul class="inslist">' + insHtml + '</ul></div>'
+
+        + '<div class="sectitle"><span class="n">05</span> Notable Public Figures With a Similar Profile</div>'
+        + '<p style="font-size:13.5px;color:var(--muted);margin-bottom:1rem">These public figures are commonly associated with a ' + p.mbti + ' profile, based on publicly discussed traits and working styles:</p>'
+        + '<div class="cscroll">' + celebHtml + '</div>'
+
+        + '<div class="sectitle" style="margin-top:1.5rem"><span class="n">06</span> Career Path Alignment</div>'
+        + '<p style="font-size:13.5px;color:var(--muted);margin-bottom:1rem">Based on your personality profile and strengths, the following directions may be worth exploring:</p>'
+        + '<div class="cargrid">' + carHtml + '</div>'
+
+        + '<div class="sectitle"><span class="n">07</span> Suggested Roadmap</div>'
+        + '<div class="pcard" style="margin-bottom:1.5rem;"><div class="tline">' + tlHtml + '</div></div>'
+
+        + '<div class="sectitle"><span class="n">08</span> Development Recommendations</div>'
+        + tipHtml;
+
+      showScreen('spf');
+      submitToServer(p, pr);
+    }
+
+    function getMBTIDesc(p) {
+      var e = p.E === 'E' ? 'you draw energy from social interaction and tend to think out loud' : 'you draw energy from independent, reflective time';
+      var s = p.S === 'S' ? 'you trust concrete facts, examples and proven methods' : 'you are drawn to abstract ideas, patterns and future possibilities';
+      var t = p.T === 'T' ? 'you tend to decide using logic and objective analysis' : 'you tend to decide based on personal values and impact on people';
+      var j = p.J === 'J' ? 'you prefer clear structure and advance planning' : 'you prefer to stay flexible and adapt as circumstances change';
+      return 'In terms of energy, ' + e + '. When processing information, ' + s + '. When making decisions, ' + t + '. And in terms of planning, ' + j + '.';
+    }
+
+    function getStudyTips(p) {
+      var tips = [];
+      if (p.topLS === 'visual') tips.push({ title: 'Use Visual Study Aids', body: 'Mind maps, diagrams and colour-coded notes are likely to be your most effective revision tools.' });
+      else if (p.topLS === 'auditory') tips.push({ title: 'Study Out Loud', body: 'Explaining material aloud, recording yourself, or discussing topics with peers will likely reinforce your understanding.' });
+      else if (p.topLS === 'kinesthetic') tips.push({ title: 'Prioritise Applied Practice', body: 'Practice problems, experiments and hands-on application are likely to be more effective for you than passive reading.' });
+      else tips.push({ title: 'Write to Retain', body: 'Detailed written notes and summaries, in your own words, are likely to be your most effective study method.' });
+
+      if (p.E === 'E') tips.push({ title: 'Use Study Groups', body: 'You are likely to learn effectively in group settings — consider forming or joining a study group.' });
+      else tips.push({ title: 'Protect Quiet Study Time', body: 'You are likely to focus best alone, in a quiet, distraction-free environment.' });
+
+      if (p.J === 'J') tips.push({ title: 'Plan and Follow a Schedule', body: 'A structured, advance study timetable is likely to work well for you — use it deliberately.' });
+      else tips.push({ title: 'Allow Flexibility in Your Schedule', body: 'Rigid timetables may not suit you well. Rotating subjects and adapting as needed is likely to be more sustainable.' });
+
+      tips.push({ title: 'Use Structured Study Intervals', body: 'A technique such as 25 minutes of focused study followed by a 5-minute break (with a longer break after four cycles) is widely effective for exam preparation.' });
+      return tips;
+    }
+
+    /* ────────────────────────────
+       SUBMIT TO SERVER
+    ──────────────────────────── */
+    function submitToServer(p, pr) {
+      var statusEl = document.getElementById('savestatus');
+      var payload = {
+        student: student,
+        answers: answers,
+        profile: {
+          mbti: p.mbti,
+          typeName: pr.name,
+          topLearningStyle: p.topLS,
+          topStrength: p.topST,
+          topEngagement: p.topEng,
+          topCareers: pr.careers.slice(0, 3).map(function (c) { return c.t; })
+        }
+      };
+      fetch('/api/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      }).then(function (res) {
+        if (!res.ok) throw new Error('save failed');
+        return res.json();
+      }).then(function () {
+        if (statusEl) statusEl.textContent = 'Your responses have been recorded.';
+      }).catch(function () {
+        if (statusEl) statusEl.textContent = 'Note: this report could not be saved to the server. You can still download or share it below.';
+      });
+    }
+
+    /* ────────────────────────────
+       PRINT & SHARE
+    ──────────────────────────── */
+    function waitForImages(el) {
+      var imgs = el.querySelectorAll('img');
+      var proms = [];
+      for (var i = 0; i < imgs.length; i++) {
+        var img = imgs[i];
+        if (!img.complete) {
+          proms.push(new Promise(function (resolve) {
+            img.onload = resolve; img.onerror = resolve;
+            setTimeout(resolve, 1500);
+          }));
+        }
+      }
+      return Promise.all(proms);
+    }
+
+    function doPrint() {
+      if (typeof html2pdf === 'undefined') { window.print(); return; }
+      var el = document.getElementById('report-content');
+      var dlBtn = document.querySelector('.btn-dl');
+      var origBtnText = dlBtn ? dlBtn.textContent : null;
+      if (dlBtn) { dlBtn.textContent = 'Preparing PDF...'; dlBtn.disabled = true; }
+
+      // Reset scroll so html2canvas captures from the top without offset
+      window.scrollTo(0, 0);
+
+      // A4 at 96dpi = 794px wide. We fix the render width to this so all
+      // max-width:900px / margin:auto centring renders correctly in the PDF.
+      var PDF_WIDTH = 794;
+
+      // Temporarily constrain the element width for a consistent capture
+      var prevWidth = el.style.width;
+      var prevMaxWidth = el.style.maxWidth;
+      el.style.width = PDF_WIDTH + 'px';
+      el.style.maxWidth = PDF_WIDTH + 'px';
+
+      setTimeout(function () {
+        waitForImages(el).then(function () {
+          var opt = {
+            margin: [10, 0, 12, 0],
+            filename: 'SocioPotents-Assessment-' + (student.name ? student.name.replace(/[^a-z0-9]+/gi, '-') : 'Report') + '.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: {
+              scale: 2,
+              useCORS: true,
+              backgroundColor: '#f7f5f0',
+              scrollX: 0,
+              scrollY: 0,
+              windowWidth: PDF_WIDTH,
+              width: PDF_WIDTH
+            },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+            pagebreak: { mode: ['avoid-all', 'css', 'legacy'], avoid: ['.pcard', '.ccard', '.carcard', '.stip', '.leadp', '.tlitem', '.phero', '.phdims', '.cgrid'] }
+          };
+
+          html2pdf().set(opt).from(el).save().then(function () {
+            // Restore element styles
+            el.style.width = prevWidth;
+            el.style.maxWidth = prevMaxWidth;
+            if (dlBtn) { dlBtn.textContent = origBtnText; dlBtn.disabled = false; }
+          }).catch(function () {
+            el.style.width = prevWidth;
+            el.style.maxWidth = prevMaxWidth;
+            if (dlBtn) { dlBtn.textContent = origBtnText; dlBtn.disabled = false; }
+            window.print();
+          });
+        });
+      }, 300);
+    }
+    function doShare() {
+      var p = compute();
+      var pr = PROF[p.mbti] || PROF['INFJ'];
+      var txt = 'Personality & Career Assessment (Socio Potents): ' + p.mbti + ' — ' + pr.name + '. Suggested career direction: ' + pr.careers[0].t + '.';
+      if (navigator.share) { navigator.share({ title: 'Personality & Career Assessment', text: txt }); }
+      else if (navigator.clipboard) { navigator.clipboard.writeText(txt).then(function () { alert('Summary copied to clipboard.'); }); }
+    }
+  </script>
+</body>
+
+</html>
