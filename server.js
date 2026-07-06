@@ -126,8 +126,15 @@ app.delete('/api/admin/submissions/:id', checkAdminAuth, (req, res) => {
 // ---------------------------------------------------------
 app.use(express.static(ROOT, { extensions: ['html'] }));
 
-app.listen(PORT, function () {
-  console.log('Socio Potents server running at http://localhost:' + PORT);
+// Fallback: serve index.html for root
+app.get('/', function (req, res) {
+  res.sendFile(path.join(ROOT, 'index.html'));
+});
+
+app.listen(PORT, '0.0.0.0', function () {
+  console.log('Socio Potents server running at http://0.0.0.0:' + PORT);
+  console.log('__dirname: ' + ROOT);
+  console.log('index.html exists: ' + fs.existsSync(path.join(ROOT, 'index.html')));
   console.log('Assessment: http://localhost:' + PORT + '/career-assessment.html');
   console.log('Admin dashboard: http://localhost:' + PORT + '/admin.html');
 });
