@@ -95,6 +95,13 @@
       margin: 0 auto;
     }
 
+    .llogo {
+      display: block;
+      height: 72px;
+      width: auto;
+      margin: 0 auto .9rem;
+    }
+
     .lbrand {
       font-family: var(--serif);
       font-size: 13px;
@@ -290,6 +297,12 @@
       position: sticky;
       top: 0;
       z-index: 50;
+    }
+
+    .qlogoimg {
+      height: 32px;
+      width: auto;
+      flex-shrink: 0;
     }
 
     .qlogo {
@@ -723,6 +736,7 @@
     .cgrid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      align-items: start;
       gap: 1rem;
       margin-bottom: 1.5rem;
     }
@@ -1162,6 +1176,7 @@
   <!-- LANDING -->
   <section class="sc on" id="sl">
     <div class="lwrap">
+      <img class="llogo" src="images/SP%20logo%20footer.png" alt="Socio Potents">
       <div class="lbrand">Socio Potents</div>
       <h1 class="ltitle">Personality &amp; Career Assessment</h1>
       <p class="lsub">A structured self-assessment for school and college students, designed to help you understand your personality style, learning preferences, natural strengths and motivational drivers — and how these relate to potential career directions.</p>
@@ -1222,6 +1237,7 @@
   <!-- QUIZ -->
   <section class="sc" id="sq">
     <div class="qtop">
+      <img class="qlogoimg" src="images/SP%20logo%20footer.png" alt="Socio Potents">
       <div class="qlogo">Socio Potents</div>
       <div class="qpwrap">
         <div class="qptr">
@@ -2286,12 +2302,17 @@
 
       // Temporarily switch #spf from flex to block so report-content fills full width
       var spf = document.getElementById('spf');
-      var prevSpfDisplay = spf.style.display;
-      var prevElWidth    = el.style.width;
-      var prevElMaxWidth = el.style.maxWidth;
+      var prevSpfDisplay  = spf.style.display;
+      var prevElWidth     = el.style.width;
+      var prevElMaxWidth  = el.style.maxWidth;
+      var prevElOverflow  = el.style.overflow;
       spf.style.display  = 'block';
       el.style.width     = '794px';
       el.style.maxWidth  = '794px';
+      el.style.overflow  = 'hidden';
+      // Force the browser to recompute layout at the fixed width now,
+      // before we measure/capture anything.
+      void el.offsetHeight;
 
       // Hide buttons during capture
       var actrow = document.querySelector('.actrow');
@@ -2305,6 +2326,7 @@
         spf.style.display  = prevSpfDisplay;
         el.style.width     = prevElWidth;
         el.style.maxWidth  = prevElMaxWidth;
+        el.style.overflow  = prevElOverflow;
         if (actrow) actrow.style.visibility = '';
         if (btnRtk) btnRtk.style.visibility = '';
         if (saveSt) saveSt.style.visibility = '';
@@ -2313,30 +2335,69 @@
 
       setTimeout(function () {
         waitForImages(el).then(function () {
-          var opt = {
-            margin: [8, 0, 10, 0],
-            filename: 'SocioPotents-Assessment-' + (student.name ? student.name.replace(/[^a-z0-9]+/gi, '-') : 'Report') + '.pdf',
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: {
-              scale: 2,
-              useCORS: true,
-              backgroundColor: '#f7f5f0',
-              scrollX: 0,
-              scrollY: 0,
-              windowWidth: 794,
-              width: 794,
-              logging: false
-            },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-            pagebreak: {
-              mode: ['css', 'legacy'],
-              avoid: ['.pcard', '.ccard', '.carcard', '.stip', '.leadp', '.tlitem', '.phdims', '.cgrid', '.phero']
-            }
-          };
+          void el.offsetHeight; // re-confirm layout is settled at 794px before capture
+          // The display/width changes above can shift the page's scroll
+          // position (sticky headers, layout reflow). html2canvas is told
+          // scrollX/scrollY are 0 below, so we must make that actually true
+          // right before capture, or the whole capture is offset and the
+          // PDF starts with blank pages.
+          window.scrollTo(0, 0);
+          document.documentElement.scrollTop = 0;
+          document.body.scrollTop = 0;
 
-          html2pdf().set(opt).from(el).save()
-            .then(restore)
-            .catch(function () { restore(); window.print(); });
+          var filename = 'SocioPotents-Assessment-' + (student.name ? student.name.replace(/[^a-z0-9]+/gi, '-') : 'Report') + '.pdf';
+
+          function legacyFallback() {
+            var opt = {
+              margin: [8, 0, 10, 0],
+              filename: filename,
+              image: { type: 'jpeg', quality: 0.98 },
+              html2canvas: { scale: 2, useCORS: true, backgroundColor: '#f7f5f0', scrollX: 0, scrollY: 0, logging: false },
+              jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(el).save().then(restore).catch(function () { restore(); window.print(); });
+          }
+
+          // Build the PDF ourselves from a single html2canvas capture instead
+          // of letting html2pdf.js do its own width/scale math — that's what
+          // was causing the cropped/blank-space layout. Slicing one tall
+          // image across pages using the canvas's own real pixel size is a
+          // well-established, reliable pattern and sidesteps that bug entirely.
+          var JsPDFCtor = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
+          var h2c = window.html2canvas;
+
+          if (!h2c || !JsPDFCtor) { legacyFallback(); return; }
+
+          h2c(el, {
+            scale: 2,
+            useCORS: true,
+            backgroundColor: '#f7f5f0',
+            scrollX: 0,
+            scrollY: 0,
+            logging: false
+          }).then(function (canvas) {
+            var pdf = new JsPDFCtor({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+            var pageWidth  = pdf.internal.pageSize.getWidth();
+            var pageHeight = pdf.internal.pageSize.getHeight();
+            var imgWidth   = pageWidth;
+            var imgHeight  = canvas.height * imgWidth / canvas.width;
+            var imgData    = canvas.toDataURL('image/jpeg', 0.98);
+
+            var heightLeft = imgHeight;
+            var position = 0;
+            pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+            while (heightLeft > 0) {
+              position -= pageHeight;
+              pdf.addPage();
+              pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+              heightLeft -= pageHeight;
+            }
+            pdf.save(filename);
+            restore();
+          }).catch(function () {
+            legacyFallback();
+          });
         });
       }, 350);
     }
