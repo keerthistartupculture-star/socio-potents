@@ -1128,10 +1128,30 @@
         size: A4 portrait;
       }
     }
+
     /* PDF capture: ensure full-width rendering */
-    #report-content { width: 100%; }
-    #report-content .phero { width: 100% !important; box-sizing: border-box !important; padding-left: 0 !important; padding-right: 0 !important; }
-    #report-content .pbody { max-width: 900px; margin-left: auto; margin-right: auto; }
+    #report-content {
+      width: 100%;
+      display: block !important;
+    }
+
+    /* #spf uses flex — force report-content to be full-width block always */
+    #spf {
+      display: block;
+    }
+
+    #report-content .phero {
+      width: 100% !important;
+      box-sizing: border-box !important;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+    }
+
+    #report-content .pbody {
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
   </style>
 </head>
 
@@ -2256,28 +2276,38 @@
 
     function doPrint() {
       if (typeof html2pdf === 'undefined') { window.print(); return; }
-      var el = document.getElementById('report-content');
+
       var dlBtn = document.querySelector('.btn-dl');
       var origBtnText = dlBtn ? dlBtn.textContent : null;
       if (dlBtn) { dlBtn.textContent = 'Preparing PDF...'; dlBtn.disabled = true; }
 
-      // Reset scroll so html2canvas captures from the top without offset
       window.scrollTo(0, 0);
 
-      // A4 at 96dpi = 794px wide. We fix the render width to this so all
-      // max-width:900px / margin:auto centring renders correctly in the PDF.
-      var PDF_WIDTH = 794;
+      // Clone report-content into an off-screen container so we never
+      // disturb the live layout. Force block display and exact A4 width.
+      var A4_PX = 794;
+      var source = document.getElementById('report-content');
+      var clone = source.cloneNode(true);
 
-      // Temporarily constrain the element width for a consistent capture
-      var prevWidth = el.style.width;
-      var prevMaxWidth = el.style.maxWidth;
-      el.style.width = PDF_WIDTH + 'px';
-      el.style.maxWidth = PDF_WIDTH + 'px';
+      // Remove any buttons that leaked into the clone
+      clone.querySelectorAll('.btn-rtk, .actrow, button').forEach(function (b) { b.parentNode.removeChild(b); });
+
+      var stage = document.createElement('div');
+      stage.style.cssText = [
+        'position:fixed', 'left:-9999px', 'top:0',
+        'width:' + A4_PX + 'px',
+        'background:#f7f5f0',
+        'display:block',
+        'overflow:visible',
+        'z-index:-1'
+      ].join(';');
+      stage.appendChild(clone);
+      document.body.appendChild(stage);
 
       setTimeout(function () {
-        waitForImages(el).then(function () {
+        waitForImages(stage).then(function () {
           var opt = {
-            margin: [10, 0, 12, 0],
+            margin: [8, 0, 10, 0],
             filename: 'SocioPotents-Assessment-' + (student.name ? student.name.replace(/[^a-z0-9]+/gi, '-') : 'Report') + '.pdf',
             image: { type: 'jpeg', quality: 0.98 },
             html2canvas: {
@@ -2286,26 +2316,24 @@
               backgroundColor: '#f7f5f0',
               scrollX: 0,
               scrollY: 0,
-              windowWidth: PDF_WIDTH,
-              width: PDF_WIDTH
+              windowWidth: A4_PX,
+              width: A4_PX,
+              logging: false
             },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-            pagebreak: { mode: ['avoid-all', 'css', 'legacy'], avoid: ['.pcard', '.ccard', '.carcard', '.stip', '.leadp', '.tlitem', '.phero', '.phdims', '.cgrid'] }
+            pagebreak: { mode: ['css', 'legacy'], avoid: ['.pcard', '.ccard', '.carcard', '.stip', '.leadp', '.tlitem', '.phdims', '.cgrid'] }
           };
 
-          html2pdf().set(opt).from(el).save().then(function () {
-            // Restore element styles
-            el.style.width = prevWidth;
-            el.style.maxWidth = prevMaxWidth;
+          html2pdf().set(opt).from(stage).save().then(function () {
+            document.body.removeChild(stage);
             if (dlBtn) { dlBtn.textContent = origBtnText; dlBtn.disabled = false; }
           }).catch(function () {
-            el.style.width = prevWidth;
-            el.style.maxWidth = prevMaxWidth;
+            document.body.removeChild(stage);
             if (dlBtn) { dlBtn.textContent = origBtnText; dlBtn.disabled = false; }
             window.print();
           });
         });
-      }, 300);
+      }, 400);
     }
     function doShare() {
       var p = compute();
