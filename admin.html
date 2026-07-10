@@ -604,12 +604,14 @@
 
     /* hidden report clone for PDF rendering */
     #pdf-stage {
-      position: fixed;
-      left: -9999px;
+      position: absolute;
+      left: 0;
       top: 0;
       width: 794px;
       background: #f7f5f0;
-      z-index: -1;
+      visibility: hidden;
+      overflow: hidden;
+      z-index: -9999;
       pointer-events: none;
     }
 
@@ -1017,24 +1019,24 @@
     }
 
     /* ANALYTICS */
-    var CHART_COLORS = ['#d2b356','#1f3a5f','#2f5233','#7a2e2e','#8a6d21','#4a4a8a','#6b4c2a','#2a6b6b'];
+    var CHART_COLORS = ['#d2b356', '#1f3a5f', '#2f5233', '#7a2e2e', '#8a6d21', '#4a4a8a', '#6b4c2a', '#2a6b6b'];
 
     function tally(arr, keyFn) {
       var out = {};
-      arr.forEach(function(s){ var k = keyFn(s) || 'Unknown'; out[k] = (out[k]||0)+1; });
+      arr.forEach(function (s) { var k = keyFn(s) || 'Unknown'; out[k] = (out[k] || 0) + 1; });
       return out;
     }
 
     function sortedEntries(obj) {
-      return Object.keys(obj).map(function(k){ return [k, obj[k]]; })
-        .sort(function(a,b){ return b[1]-a[1]; });
+      return Object.keys(obj).map(function (k) { return [k, obj[k]]; })
+        .sort(function (a, b) { return b[1] - a[1]; });
     }
 
     function barChart(entries, total, colors) {
       if (!entries.length) return '<div class="chart-empty">No data yet.</div>';
       return '<div class="chart-bar-wrap">'
-        + entries.map(function(e, i) {
-          var pct = total ? Math.round((e[1]/total)*100) : 0;
+        + entries.map(function (e, i) {
+          var pct = total ? Math.round((e[1] / total) * 100) : 0;
           var col = colors ? colors[i % colors.length] : CHART_COLORS[i % CHART_COLORS.length];
           return '<div class="chart-bar-row">'
             + '<div class="chart-bar-label" title="' + e[0] + '">' + e[0] + '</div>'
@@ -1051,14 +1053,14 @@
 
     function donutChart(entries, total) {
       if (!entries.length) return '<div class="chart-empty">No data yet.</div>';
-      var size = 140, cx = size/2, cy = size/2, r = 52, inner = 30;
+      var size = 140, cx = size / 2, cy = size / 2, r = 52, inner = 30;
       var slices = '';
-      var angle = -Math.PI/2;
-      var top5 = entries.slice(0,6);
-      var otherCount = entries.slice(6).reduce(function(a,e){ return a+e[1]; }, 0);
+      var angle = -Math.PI / 2;
+      var top5 = entries.slice(0, 6);
+      var otherCount = entries.slice(6).reduce(function (a, e) { return a + e[1]; }, 0);
       if (otherCount > 0) top5.push(['Other', otherCount]);
 
-      top5.forEach(function(e, i) {
+      top5.forEach(function (e, i) {
         var frac = e[1] / total;
         var sweep = frac * 2 * Math.PI;
         var x1 = cx + r * Math.cos(angle);
@@ -1077,13 +1079,13 @@
       var svg = '<svg width="' + size + '" height="' + size + '" viewBox="0 0 ' + size + ' ' + size + '" style="flex-shrink:0;">'
         + slices
         + '<circle cx="' + cx + '" cy="' + cy + '" r="' + inner + '" fill="white"/>'
-        + '<text x="' + cx + '" y="' + (cy-5) + '" text-anchor="middle" font-size="13" font-weight="700" fill="#1a1a1a">' + total + '</text>'
-        + '<text x="' + cx + '" y="' + (cy+12) + '" text-anchor="middle" font-size="9" fill="#888">total</text>'
+        + '<text x="' + cx + '" y="' + (cy - 5) + '" text-anchor="middle" font-size="13" font-weight="700" fill="#1a1a1a">' + total + '</text>'
+        + '<text x="' + cx + '" y="' + (cy + 12) + '" text-anchor="middle" font-size="9" fill="#888">total</text>'
         + '</svg>';
 
       var legend = '<div class="donut-legend">'
-        + top5.map(function(e, i) {
-          var pct = total ? Math.round((e[1]/total)*100) : 0;
+        + top5.map(function (e, i) {
+          var pct = total ? Math.round((e[1] / total) * 100) : 0;
           var col = CHART_COLORS[i % CHART_COLORS.length];
           return '<div class="donut-legend-item">'
             + '<div class="donut-legend-dot" style="background:' + col + '"></div>'
@@ -1102,15 +1104,15 @@
       // KPI cards for analytics view
       var sg2 = document.getElementById('stat-grid-2');
       if (sg2) {
-        var byMbti = tally(submissions, function(s){ return s.profile && s.profile.mbti; });
+        var byMbti = tally(submissions, function (s) { return s.profile && s.profile.mbti; });
         var entries = sortedEntries(byMbti);
         var topMbtiHtml = '';
-        entries.slice(0,4).forEach(function(e, i) {
+        entries.slice(0, 4).forEach(function (e, i) {
           var c = mbtiColor(e[0]);
           topMbtiHtml += '<div class="stat-card">'
             + '<div class="sc-icon" style="background:' + c.bg + '">&#129504;</div>'
             + '<div class="sc-num" style="font-size:22px;color:' + c.fg + '">' + e[0] + '</div>'
-            + '<div class="sc-lbl">' + e[1] + ' student' + (e[1]!==1?'s':'') + '</div>'
+            + '<div class="sc-lbl">' + e[1] + ' student' + (e[1] !== 1 ? 's' : '') + '</div>'
             + '</div>';
         });
         sg2.innerHTML = topMbtiHtml || '<p style="color:var(--muted);font-size:13px;padding:.5rem 0;">No data yet.</p>';
@@ -1119,29 +1121,29 @@
       // Level bar chart
       var levelEl = document.getElementById('chart-level');
       if (levelEl) {
-        var byLevel = tally(submissions, function(s){ return s.student && s.student.level; });
-        levelEl.innerHTML = barChart(sortedEntries(byLevel), total, ['#d2b356','#1f3a5f','#2f5233','#7a2e2e','#8a6d21']);
+        var byLevel = tally(submissions, function (s) { return s.student && s.student.level; });
+        levelEl.innerHTML = barChart(sortedEntries(byLevel), total, ['#d2b356', '#1f3a5f', '#2f5233', '#7a2e2e', '#8a6d21']);
       }
 
       // MBTI donut
       var mbtiEl = document.getElementById('chart-mbti');
       if (mbtiEl) {
-        var byMbti2 = tally(submissions, function(s){ return s.profile && s.profile.mbti; });
+        var byMbti2 = tally(submissions, function (s) { return s.profile && s.profile.mbti; });
         mbtiEl.innerHTML = donutChart(sortedEntries(byMbti2), total);
       }
 
       // Learning style bar chart
       var learnEl = document.getElementById('chart-learning');
       if (learnEl) {
-        var byLearn = tally(submissions, function(s){ return s.profile && s.profile.topLearningStyle; });
-        learnEl.innerHTML = barChart(sortedEntries(byLearn), total, ['#2f5233','#1f3a5f','#d2b356','#7a2e2e']);
+        var byLearn = tally(submissions, function (s) { return s.profile && s.profile.topLearningStyle; });
+        learnEl.innerHTML = barChart(sortedEntries(byLearn), total, ['#2f5233', '#1f3a5f', '#d2b356', '#7a2e2e']);
       }
 
       // Engagement drivers bar chart
       var engEl = document.getElementById('chart-engagement');
       if (engEl) {
-        var byEng = tally(submissions, function(s){ return s.profile && s.profile.topEngagement; });
-        engEl.innerHTML = barChart(sortedEntries(byEng), total, ['#7a2e2e','#8a6d21','#1f3a5f','#2f5233']);
+        var byEng = tally(submissions, function (s) { return s.profile && s.profile.topEngagement; });
+        engEl.innerHTML = barChart(sortedEntries(byEng), total, ['#7a2e2e', '#8a6d21', '#1f3a5f', '#2f5233']);
       }
     }
 
@@ -1211,38 +1213,40 @@
         .then(function () { closeModal(); loadSubmissions(); });
     }
 
-    /* PDF DOWNLOAD */
+    /* PDF DOWNLOAD — print via hidden iframe for reliable rendering */
     function downloadReport(i) {
       var s = submissions[i];
       if (!s) return;
       var st = s.student || {};
       var pr = s.profile || {};
 
-      var stage = document.getElementById('pdf-stage');
-      stage.innerHTML = buildReportHTML(st, pr, s.submittedAt);
+      var html = buildReportHTML(st, pr, s.submittedAt);
 
-      var filename = 'SocioPotents-Assessment-' + (st.name ? st.name.replace(/[^a-z0-9]+/gi, '-') : 'Report') + '.pdf';
+      // Remove any previous iframe
+      var old = document.getElementById('print-frame');
+      if (old) old.parentNode.removeChild(old);
 
-      if (typeof html2pdf === 'undefined') {
-        alert('PDF library not loaded. Please refresh the page and try again.');
-        return;
-      }
+      var iframe = document.createElement('iframe');
+      iframe.id = 'print-frame';
+      iframe.style.cssText = 'position:fixed;left:-9999px;top:0;width:794px;height:1px;border:none;visibility:hidden;';
+      document.body.appendChild(iframe);
 
-      var opt = {
-        margin: [10, 0, 12, 0],
-        filename: filename,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true, backgroundColor: '#f7f5f0', scrollX: 0, scrollY: 0, windowWidth: 794, width: 794 },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-        pagebreak: { mode: ['avoid-all', 'css', 'legacy'], avoid: ['.rcard', '.rleadp', '.rhero', '.rdims'] }
+      var doc = iframe.contentWindow.document;
+      doc.open();
+      doc.write(html);
+      doc.close();
+
+      // Wait for content to fully render then print
+      iframe.onload = function () {
+        setTimeout(function () {
+          iframe.style.visibility = 'visible';
+          iframe.contentWindow.focus();
+          iframe.contentWindow.print();
+          setTimeout(function () {
+            iframe.style.visibility = 'hidden';
+          }, 1000);
+        }, 400);
       };
-
-      html2pdf().set(opt).from(stage).save().then(function () {
-        stage.innerHTML = '';
-      }).catch(function () {
-        stage.innerHTML = '';
-        alert('PDF generation failed. Please try again.');
-      });
     }
 
     function buildReportHTML(st, pr, submittedAt) {
@@ -1259,57 +1263,76 @@
       ];
 
       var dimsHtml = dimDefs.map(function (d) {
-        return '<div class="rdim">'
-          + '<div class="rdim-lbl">' + d.l + '</div>'
-          + '<div class="rdim-val">' + d.v + '</div>'
+        return '<div style="background:#ffffff;border:1px solid #e4dfd2;border-radius:10px;padding:14px 16px;">'
+          + '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#888888;margin-bottom:4px;">' + d.l + '</div>'
+          + '<div style="font-size:14px;font-weight:700;color:#1a1a1a;">' + d.v + '</div>'
           + '</div>';
       }).join('');
 
-      var careersHtml = careers.map(function (c, i) {
-        return '<div class="rcareer">' + (i + 1) + '. ' + c + '</div>';
+      var careersHtml = careers.map(function (c, idx) {
+        return '<div style="font-size:13.5px;padding:8px 0;border-bottom:1px solid #f0ece3;color:#333333;">'
+          + (idx + 1) + '.&nbsp;&nbsp;' + c + '</div>';
       }).join('');
 
-      return '<div style="font-family:system-ui,Arial,sans-serif;background:#f7f5f0;width:794px;">'
-        + '<div class="rhero" style="background:#1a1a1a;color:#fff;padding:2.5rem 2rem 3rem;text-align:center;width:100%;box-sizing:border-box;">'
-        + '  <div style="font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#d2b356;margin-bottom:.6rem;">Socio Potents</div>'
-        + '  <div style="font-size:11px;color:rgba(255,255,255,.5);margin-bottom:1.5rem;">Personality &amp; Career Assessment Report</div>'
-        + '  <div style="display:inline-block;font-size:11px;font-weight:700;padding:4px 18px;border-radius:20px;background:rgba(210,179,86,.18);color:#d2b356;border:1px solid rgba(210,179,86,.4);margin-bottom:.75rem;">' + mbti + ' Personality Type</div>'
-        + '  <div style="font-size:12px;color:rgba(255,255,255,.6);margin-bottom:.5rem;">Report prepared for</div>'
-        + '  <div style="font-family:Georgia,serif;font-size:32px;color:#fff;margin-bottom:.3rem;">' + (st.name || '—') + '</div>'
-        + '  <div style="font-family:Georgia,serif;font-size:18px;color:rgba(255,255,255,.7);font-style:italic;margin-bottom:1.25rem;">' + typeName + '</div>'
-        + '  <div style="font-family:Georgia,serif;font-size:28px;font-weight:700;color:#d2b356;background:rgba(255,255,255,.06);display:inline-block;padding:6px 28px;border-radius:8px;border:1px solid rgba(210,179,86,.35);">' + mbti + '</div>'
-        + '</div>'
-        + '<div style="max-width:680px;margin:0 auto;padding:2rem 1.5rem;">'
-        + '<div style="background:#fff;border:1px solid #e4dfd2;border-radius:12px;padding:1.25rem 1.5rem;margin-bottom:1.5rem;">'
-        + '  <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#a9843a;margin-bottom:.75rem;">Student Information</div>'
-        + infoRow('Name', st.name) + infoRow('Email', st.email) + infoRow('Age', st.age)
-        + infoRow('Education Level', st.level) + infoRow('Institution', st.institution)
-        + (date ? infoRow('Assessment Date', date) : '')
-        + '</div>'
-        + '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#a9843a;margin-bottom:.75rem;margin-top:.25rem;">Assessment Results</div>'
-        + '<div class="rdims" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.5rem;">' + dimsHtml + '</div>'
-        + (careers.length ? '<div style="background:#fff;border:1px solid #e4dfd2;border-radius:12px;padding:1.25rem 1.5rem;margin-bottom:1.5rem;">'
-          + '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#a9843a;margin-bottom:.75rem;">Suggested Career Directions</div>'
-          + careersHtml + '</div>' : '')
-        + '<div style="text-align:center;padding:1.5rem 0 .5rem;border-top:1px solid #e4dfd2;margin-top:1rem;">'
-        + '  <div style="font-size:10.5px;color:#888;line-height:1.6;">This report is generated from self-reported responses using an educational personality and career-guidance framework.<br>It is intended to support self-understanding and career exploration, and is not a clinical or diagnostic assessment.</div>'
-        + '  <div style="font-size:10px;color:#aaa;margin-top:.5rem;">&#169; 2025 Socio Potents</div>'
-        + '</div>'
-        + '</div></div>'
-        + '<style>'
-        + '.rdim{background:#fff;border:1px solid #e4dfd2;border-radius:10px;padding:1rem 1.1rem;}'
-        + '.rdim-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#888;margin-bottom:4px;}'
-        + '.rdim-val{font-size:14px;font-weight:700;color:#1a1a1a;}'
-        + '.rcareer{font-size:13.5px;padding:7px 0;border-bottom:1px solid #f0ece3;color:#333;}'
-        + '.rcareer:last-child{border:none;}'
-        + '</style>';
-    }
+      function row(label, val) {
+        if (val === undefined || val === null || val === '') return '';
+        return '<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid #f0ece3;">'
+          + '<span style="font-size:13px;color:#888888;">' + label + '</span>'
+          + '<span style="font-size:13px;font-weight:600;color:#1a1a1a;">' + val + '</span>'
+          + '</div>';
+      }
 
-    function infoRow(label, val) {
-      if (val === undefined || val === null || val === '') return '';
-      return '<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f0ece3;font-size:13px;">'
-        + '<span style="color:#888;">' + label + '</span>'
-        + '<span style="font-weight:600;color:#1a1a1a;">' + val + '</span></div>';
+      return '<!DOCTYPE html><html><head><meta charset="UTF-8">'
+        + '<title>Socio Potents — Assessment Report</title>'
+        + '<style>'
+        + 'body{margin:0;padding:0;font-family:Arial,Helvetica,sans-serif;background:#f7f5f0;-webkit-print-color-adjust:exact;print-color-adjust:exact;}'
+        + '@page{margin:12mm 10mm;size:A4 portrait;}'
+        + '@media print{'
+        + '  body{background:#f7f5f0 !important;}'
+        + '  .hero{background:#1a1a1a !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}'
+        + '  .card{background:#ffffff !important;page-break-inside:avoid;break-inside:avoid;}'
+        + '}'
+        + '</style>'
+        + '</head><body>'
+        /* ── HERO ── */
+        + '<div class="hero" style="background:#1a1a1a;color:#ffffff;padding:40px 32px 48px;text-align:center;width:100%;box-sizing:border-box;margin-bottom:0;">'
+        + '  <div style="font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#d2b356;margin-bottom:8px;">SOCIO POTENTS</div>'
+        + '  <div style="font-size:11px;color:#aaaaaa;margin-bottom:20px;">Personality &amp; Career Assessment Report</div>'
+        + '  <div style="display:inline-block;font-size:11px;font-weight:700;padding:5px 18px;border-radius:20px;background:#2e2a20;color:#d2b356;border:1px solid #5a4a20;margin-bottom:12px;">' + mbti + ' Personality Type</div>'
+        + '  <div style="font-size:12px;color:#aaaaaa;margin-bottom:6px;">Report prepared for</div>'
+        + '  <div style="font-family:Georgia,serif;font-size:32px;color:#ffffff;margin-bottom:4px;">' + (st.name || '—') + '</div>'
+        + '  <div style="font-family:Georgia,serif;font-size:18px;color:#cccccc;font-style:italic;margin-bottom:18px;">' + typeName + '</div>'
+        + '  <div style="font-family:Georgia,serif;font-size:28px;font-weight:700;color:#d2b356;background:#2a2620;display:inline-block;padding:8px 28px;border-radius:8px;border:1px solid #5a4a20;">' + mbti + '</div>'
+        + '</div>'
+        /* ── BODY ── */
+        + '<div style="max-width:680px;margin:0 auto;padding:28px 24px;">'
+        /* Student info card */
+        + '<div class="card" style="background:#ffffff;border:1px solid #e4dfd2;border-radius:12px;padding:20px 24px;margin-bottom:20px;">'
+        + '  <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#a9843a;margin-bottom:12px;">Student Information</div>'
+        + row('Name', st.name)
+        + row('Email', st.email)
+        + row('Age', st.age)
+        + row('Education Level', st.level)
+        + row('Institution', st.institution)
+        + (date ? row('Assessment Date', date) : '')
+        + '</div>'
+        /* Assessment results */
+        + '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#a9843a;margin-bottom:12px;">Assessment Results</div>'
+        + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;">' + dimsHtml + '</div>'
+        /* Career directions */
+        + (careers.length
+          ? '<div class="card" style="background:#ffffff;border:1px solid #e4dfd2;border-radius:12px;padding:20px 24px;margin-bottom:20px;page-break-inside:avoid;break-inside:avoid;">'
+          + '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#a9843a;margin-bottom:12px;">Suggested Career Directions</div>'
+          + careersHtml
+          + '</div>'
+          : '')
+        /* Footer */
+        + '<div style="text-align:center;padding:20px 0 8px;border-top:1px solid #e4dfd2;margin-top:8px;page-break-inside:avoid;break-inside:avoid;">'
+        + '  <div style="font-size:10px;color:#888888;line-height:1.7;">This report is generated from self-reported responses using an educational personality and career-guidance framework. It is intended to support self-understanding and career exploration, and is not a clinical or diagnostic assessment.</div>'
+        + '  <div style="font-size:10px;color:#aaaaaa;margin-top:8px;">&copy; 2025 Socio Potents</div>'
+        + '</div>'
+        + '</div>'
+        + '</body></html>';
     }
 
     /* AUTO LOGIN */

@@ -1150,9 +1150,7 @@
     }
 
     /* #spf uses flex — force report-content to be full-width block always */
-    #spf {
-      display: block;
-    }
+    /* Note: display is controlled by .sc/.sc.on — do NOT override here */
 
     #report-content .phero {
       width: 100% !important;
@@ -1207,7 +1205,7 @@
         </div>
         <div class="field">
           <label>Age <span class="req">*</span></label>
-          <input class="inp" id="in-age" type="number" min="10" max="30" placeholder="e.g. 16" autocomplete="off">
+          <input class="inp" id="in-age" type="number" min="10" max="65" placeholder="e.g. 16" autocomplete="off">
         </div>
       </div>
       <div class="field">
@@ -1218,16 +1216,17 @@
           <option value="Class 10-11">Class 10–11 (Senior School)</option>
           <option value="Class 12">Class 12 (Final Year)</option>
           <option value="College">College / University</option>
+          <option value="Working Professional">Working Professional</option>
           <option value="Other">Other</option>
         </select>
       </div>
       <div class="field">
-        <label>School / College Name <span class="req">*</span></label>
-        <input class="inp" id="in-institution" type="text" placeholder="Institution name" autocomplete="off">
+        <label>School / College / Company Name <span class="req">*</span></label>
+        <input class="inp" id="in-institution" type="text" placeholder="School, college or company name" autocomplete="off">
       </div>
       <div class="field">
-        <label>Phone (optional)</label>
-        <input class="inp" id="in-phone" type="tel" placeholder="Optional" autocomplete="off">
+        <label>Phone <span class="req">*</span></label>
+        <input class="inp" id="in-phone" type="tel" placeholder="Your phone number" autocomplete="off">
       </div>
       <div class="errtxt" id="ob-err"></div>
       <button class="btn-n" id="ob-nxt" onclick="startQuiz()">Start Assessment</button>
@@ -1322,7 +1321,7 @@
       },
       {
         id: 'P2', domain: 'personality', type: 'choice',
-        text: "In free time at school, you usually:",
+        text: "In free time, you usually:",
         options: [{ val: 'S', text: "Finish your work or tidy your notes" },
         { val: 'N', text: "Daydream about a new idea" },
         { val: 'S', text: "Talk with classmates about normal stuff" },
@@ -1858,13 +1857,56 @@
       impact: { n: 'Impact-Driven', d: 'You engage most when your work visibly helps others or solves a real problem.' },
       choice: { n: 'Autonomy-Driven', d: 'You engage most when given freedom and choice in your approach.' }
     };
-    var tlData = [
-      { label: 'Right Now', title: 'Understand yourself', body: 'Use this report to understand how you learn best, and let it inform your study approach going forward.', col: '#1f3a5f' },
-      { label: 'After Class 12', title: 'Choose your stream or course deliberately', body: 'Use your personality and career-match results, alongside academic performance and interests, to inform your choice of stream or degree.', col: '#2f5233' },
-      { label: 'College Years', title: 'Explore deliberately', body: 'Use clubs, internships and projects to test the career directions suggested by this report against real experience.', col: '#8a6d21' },
-      { label: 'Early Career', title: 'Seek roles that match your strengths', body: 'Roles that draw on your natural strengths tend to be more sustainable and satisfying than those that require you to work against your grain.', col: '#7a2e2e' },
-      { label: 'Long Term', title: 'Continue building self-awareness', body: 'Self-awareness of this kind is a durable professional asset. Revisit and refine your understanding of your own strengths as you gain experience.', col: '#495867' }
-    ];
+    var LONG_TERM_STAGE = { label: 'Long Term', title: 'Continue building self-awareness', body: 'Self-awareness of this kind is a durable professional asset. Revisit and refine your understanding of your own strengths as you gain experience.', col: '#495867' };
+
+    var ROADMAPS = {
+      'Class 8-9': [
+        { label: 'Right Now', title: 'Understand yourself', body: 'Use this report to understand how you learn best, and let it inform your study habits and the activities you choose right now.', col: '#1f3a5f' },
+        { label: 'Next 1–2 Years', title: 'Explore broadly', body: 'Try a wide range of subjects, clubs and hobbies rather than narrowing down too early — this is the best stage to discover what genuinely interests you.', col: '#2f5233' },
+        { label: 'Class 9–10', title: 'Notice patterns in what you enjoy', body: 'Pay attention to which subjects and activities consistently energise you — this will make your stream choice after Class 10 much easier.', col: '#8a6d21' },
+        { label: 'After Class 10', title: 'Choose your stream deliberately', body: 'Use your personality and strengths from this report, alongside your academic performance and interests, to choose your Class 11–12 stream.', col: '#7a2e2e' },
+        LONG_TERM_STAGE
+      ],
+      'Class 10-11': [
+        { label: 'Right Now', title: 'Understand yourself', body: 'Use this report to understand how you learn best, and let it inform your study approach for the next two years.', col: '#1f3a5f' },
+        { label: 'This Year', title: 'Choose subjects deliberately', body: 'Use your personality and career-match results, alongside academic performance and interests, to choose your subject combination or specialisation.', col: '#2f5233' },
+        { label: 'Class 12', title: 'Prepare with a clear direction', body: 'Align your board-exam and entrance-exam preparation with the career directions this report suggests, rather than preparing in general.', col: '#8a6d21' },
+        { label: 'After Class 12', title: 'Choose your course deliberately', body: 'Use this report alongside your results and interests to shortlist degrees and colleges that suit your profile.', col: '#7a2e2e' },
+        LONG_TERM_STAGE
+      ],
+      'Class 12': [
+        { label: 'Right Now', title: 'Understand yourself', body: 'Use this report to understand how you learn best, and let it inform how you prepare for exams and applications this year.', col: '#1f3a5f' },
+        { label: 'Next Few Months', title: 'Shortlist courses and colleges', body: 'Use your personality and career-match results, alongside your academic performance and interests, to shortlist degrees and institutions.', col: '#2f5233' },
+        { label: 'After Class 12', title: 'Choose your stream or course deliberately', body: 'Make your final course decision using this report alongside real conversations with people already working in those fields.', col: '#8a6d21' },
+        { label: 'College Years', title: 'Explore deliberately', body: 'Use clubs, internships and projects to test the career directions suggested by this report against real experience.', col: '#7a2e2e' },
+        LONG_TERM_STAGE
+      ],
+      'College': [
+        { label: 'Right Now', title: 'Understand yourself', body: 'Use this report to understand how you learn best, and let it inform how you approach coursework and projects.', col: '#1f3a5f' },
+        { label: 'This Year', title: 'Explore deliberately', body: 'Use clubs, internships and projects to test the career directions suggested by this report against real experience.', col: '#2f5233' },
+        { label: 'Final Years', title: 'Build a focused portfolio', body: 'Develop specific, demonstrable skills and project work in the direction that best matches your profile, rather than staying general.', col: '#8a6d21' },
+        { label: 'Early Career', title: 'Seek roles that match your strengths', body: 'Roles that draw on your natural strengths tend to be more sustainable and satisfying than those that require you to work against your grain.', col: '#7a2e2e' },
+        LONG_TERM_STAGE
+      ],
+      'Working Professional': [
+        { label: 'Right Now', title: 'Understand yourself', body: 'Use this report to understand your natural strengths and motivators, and how well they currently match your day-to-day work.', col: '#1f3a5f' },
+        { label: 'Next Few Months', title: 'Audit your current role', body: 'Compare your current responsibilities against the strengths and engagement drivers in this report — note where they align and where they don’t.', col: '#2f5233' },
+        { label: 'This Year', title: 'Close specific skill gaps', body: 'Pursue targeted upskilling, certifications or projects that build on your natural strengths and the career directions this report suggests.', col: '#8a6d21' },
+        { label: 'Medium Term', title: 'Seek a better-matched role', body: 'Look for roles, projects or an internal move that draw more on your strengths — this tends to be more sustainable than pushing against your grain long-term.', col: '#7a2e2e' },
+        LONG_TERM_STAGE
+      ],
+      'Other': [
+        { label: 'Right Now', title: 'Understand yourself', body: 'Use this report to understand how you learn best, and let it inform your next steps — academic or professional.', col: '#1f3a5f' },
+        { label: 'Near Term', title: 'Choose your next step deliberately', body: 'Use your personality and career-match results, alongside your interests and circumstances, to inform your next course, role or direction.', col: '#2f5233' },
+        { label: 'Coming Months', title: 'Explore deliberately', body: 'Use projects, courses or work experience to test the directions suggested by this report against real experience.', col: '#8a6d21' },
+        { label: 'Next Stage', title: 'Seek fit that matches your strengths', body: 'Directions that draw on your natural strengths tend to be more sustainable and satisfying than those that require you to work against your grain.', col: '#7a2e2e' },
+        LONG_TERM_STAGE
+      ]
+    };
+
+    function getRoadmap(level) {
+      return ROADMAPS[level] || ROADMAPS['Other'];
+    }
 
     /* ────────────────────────────
        NAVIGATION
@@ -1904,7 +1946,7 @@
       var phone = document.getElementById('in-phone').value.trim();
       var err = document.getElementById('ob-err');
 
-      if (!name || !email || !age || !level || !institution) {
+      if (!name || !email || !age || !level || !institution || !phone) {
         err.textContent = 'Please complete all required fields marked with *.';
         return;
       }
@@ -1912,8 +1954,8 @@
         err.textContent = 'Please enter a valid email address.';
         return;
       }
-      if (isNaN(age) || age < 10 || age > 30) {
-        err.textContent = 'Please enter a valid age between 10 and 30.';
+      if (isNaN(age) || age < 10 || age > 65) {
+        err.textContent = 'Please enter a valid age between 10 and 65.';
         return;
       }
       err.textContent = '';
@@ -2155,6 +2197,7 @@
           + '</div>';
       }
 
+      var tlData = getRoadmap(student.level);
       var tlHtml = '';
       for (var k = 0; k < tlData.length; k++) {
         var t = tlData[k];
@@ -2293,8 +2336,8 @@
     function doPrint() {
       if (typeof html2pdf === 'undefined') { window.print(); return; }
 
-      var el     = document.getElementById('report-content');
-      var dlBtn  = document.querySelector('.btn-dl');
+      var el = document.getElementById('report-content');
+      var dlBtn = document.querySelector('.btn-dl');
       var origBtnText = dlBtn ? dlBtn.textContent : null;
       if (dlBtn) { dlBtn.textContent = 'Preparing PDF...'; dlBtn.disabled = true; }
 
@@ -2302,14 +2345,14 @@
 
       // Temporarily switch #spf from flex to block so report-content fills full width
       var spf = document.getElementById('spf');
-      var prevSpfDisplay  = spf.style.display;
-      var prevElWidth     = el.style.width;
-      var prevElMaxWidth  = el.style.maxWidth;
-      var prevElOverflow  = el.style.overflow;
-      spf.style.display  = 'block';
-      el.style.width     = '794px';
-      el.style.maxWidth  = '794px';
-      el.style.overflow  = 'hidden';
+      var prevSpfDisplay = spf.style.display;
+      var prevElWidth = el.style.width;
+      var prevElMaxWidth = el.style.maxWidth;
+      var prevElOverflow = el.style.overflow;
+      spf.style.display = 'block';
+      el.style.width = '794px';
+      el.style.maxWidth = '794px';
+      el.style.overflow = 'hidden';
       // Force the browser to recompute layout at the fixed width now,
       // before we measure/capture anything.
       void el.offsetHeight;
@@ -2323,14 +2366,14 @@
       if (saveSt) saveSt.style.visibility = 'hidden';
 
       function restore() {
-        spf.style.display  = prevSpfDisplay;
-        el.style.width     = prevElWidth;
-        el.style.maxWidth  = prevElMaxWidth;
-        el.style.overflow  = prevElOverflow;
+        spf.style.display = prevSpfDisplay;
+        el.style.width = prevElWidth;
+        el.style.maxWidth = prevElMaxWidth;
+        el.style.overflow = prevElOverflow;
         if (actrow) actrow.style.visibility = '';
         if (btnRtk) btnRtk.style.visibility = '';
         if (saveSt) saveSt.style.visibility = '';
-        if (dlBtn)  { dlBtn.textContent = origBtnText; dlBtn.disabled = false; }
+        if (dlBtn) { dlBtn.textContent = origBtnText; dlBtn.disabled = false; }
       }
 
       setTimeout(function () {
@@ -2377,11 +2420,11 @@
             logging: false
           }).then(function (canvas) {
             var pdf = new JsPDFCtor({ unit: 'mm', format: 'a4', orientation: 'portrait' });
-            var pageWidth  = pdf.internal.pageSize.getWidth();
+            var pageWidth = pdf.internal.pageSize.getWidth();
             var pageHeight = pdf.internal.pageSize.getHeight();
-            var imgWidth   = pageWidth;
-            var imgHeight  = canvas.height * imgWidth / canvas.width;
-            var imgData    = canvas.toDataURL('image/jpeg', 0.98);
+            var imgWidth = pageWidth;
+            var imgHeight = canvas.height * imgWidth / canvas.width;
+            var imgData = canvas.toDataURL('image/jpeg', 0.98);
 
             var heightLeft = imgHeight;
             var position = 0;
