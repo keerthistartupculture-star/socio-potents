@@ -2,7 +2,7 @@
   "name": "socio-potents-assessment",
   "version": "1.0.0",
   "private": true,
-  "description": "Socio Potents website + Personality & Career Assessment backend",
+  "description": "Socio Potents website",
   "scripts": {
     "start": "node server.js"
   },
@@ -10,6 +10,7 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "http-proxy-middleware": "^3.0.3"
   }
 }

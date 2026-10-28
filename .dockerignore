@@ -4,3 +4,6 @@ data
 *.log
 Dockerfile
 .dockerignore
+path-ai
+docker-compose.yml
+*.md

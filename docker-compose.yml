@@ -1,0 +1,43 @@
+# Socio Potents site + Path AI (sociopotents.in/path-ai) + PostgreSQL for Path AI.
+# Usage: copy path-ai/.env.example to path-ai/.env, fill it in, then `docker compose up -d --build`.
+services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: pathai
+      POSTGRES_PASSWORD: ${PATH_AI_DB_PASSWORD:?set PATH_AI_DB_PASSWORD in .env next to this file}
+      POSTGRES_DB: pathai
+    volumes:
+      - pathai-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pathai"]
+      interval: 5s
+      retries: 10
+
+  path-ai:
+    build: ./path-ai
+    restart: unless-stopped
+    env_file: ./path-ai/.env
+    environment:
+      DATABASE_URL: postgresql://pathai:${PATH_AI_DB_PASSWORD}@db:5432/pathai
+      PORT: "4000"
+    volumes:
+      - pathai-reports:/app/storage/reports
+    depends_on:
+      db:
+        condition: service_healthy
+
+  site:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      PATH_AI_URL: http://path-ai:4000
+    depends_on:
+      - path-ai
+
+volumes:
+  pathai-db:
+  pathai-reports:

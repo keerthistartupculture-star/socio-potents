@@ -1,0 +1,66 @@
+# Render Blueprint: the Socio Potents website with Path AI at /path-ai, as ONE web service.
+# Create it from the Render dashboard: New → Blueprint → pick this repo. See DEPLOY.md.
+#
+# Database: point DATABASE_URL at your existing Path AI database (its "Internal Database URL")
+# to keep existing accounts and reports, or at a new Render PostgreSQL database.
+#
+# Free plan: the service sleeps after ~15 min idle (the first visit then takes ~1 min), and a
+# free database expires 30 days after it was created. Use paid plans for real users.
+
+services:
+  - type: web
+    name: socio-potents
+    runtime: node
+    plan: free
+    buildCommand: npm ci && cd path-ai && npm ci && npx prisma generate && npx next build
+    # Migrations and the (idempotent) seed run at start: the build step can't reliably reach the database.
+    startCommand: cd path-ai && npx prisma migrate deploy && npx tsx prisma/seed.ts && cd .. && node start.js
+    healthCheckPath: /
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      # Path AI lives under /path-ai. Needed at build AND start — do not remove.
+      - key: NEXT_PUBLIC_BASE_PATH
+        value: /path-ai
+
+      - key: DATABASE_URL
+        sync: false
+
+      # Secrets Render generates once and keeps.
+      - key: NEXTAUTH_SECRET
+        generateValue: true
+      - key: ADMIN_JWT_SECRET
+        generateValue: true
+      - key: CRON_SECRET
+        generateValue: true
+
+      # https://sociopotents.in/path-ai/api/auth  (or https://<service>.onrender.com/path-ai/api/auth
+      # until the domain is connected)
+      - key: NEXTAUTH_URL
+        sync: false
+      # https://sociopotents.in/path-ai  (used in reminder emails)
+      - key: APP_URL
+        sync: false
+
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-3.1-flash-lite
+      # Used automatically when the main model is overloaded or out of free quota.
+      - key: GEMINI_FALLBACK_MODEL
+        value: gemini-flash-lite-latest
+
+      # Path AI admin login (/path-ai/admin). The password is applied on every start.
+      - key: SEED_ADMIN_EMAIL
+        sync: false
+      - key: SEED_ADMIN_PASSWORD
+        sync: false
+
+      - key: APP_NAME
+        value: PATH AI
+      - key: DEMO_MODE_DEFAULT
+        value: "false"
+      - key: RATE_LIMIT_MAX
+        value: "60"
+      - key: RATE_LIMIT_WINDOW_MS
+        value: "60000"

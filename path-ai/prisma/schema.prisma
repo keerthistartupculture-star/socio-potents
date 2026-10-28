@@ -1,0 +1,640 @@
+// PATH AI — database schema
+// Every content table carries created_at/updated_at (+ deleted_at where soft-delete matters)
+// and every assessment/report row pins the framework/prompt/model/scoring versions that
+// produced it, so historical reports stay reproducible even after logic changes (see spec §46).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ───────────────────────────── Enums ─────────────────────────────
+
+enum EducationLevel {
+  CLASS_10
+  CLASS_12
+  DIPLOMA
+  UNDERGRADUATE
+  POSTGRADUATE
+  WORKING_PROFESSIONAL
+}
+
+enum AssessmentFramework {
+  BIG_FIVE
+  MBTI
+}
+
+enum AssessmentStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  PAUSED
+  COMPLETED
+  ABANDONED
+}
+
+enum InputMethod {
+  VOICE
+  TEXT
+  MIXED
+}
+
+enum QuestionType {
+  SCENARIO
+  OPEN_ENDED
+  MULTIPLE_CHOICE
+  VOICE
+  TEXT
+  FOLLOW_UP
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+  PREFER_NOT_TO_SAY
+}
+
+enum AdminRole {
+  ADMIN
+  SUPER_ADMIN
+  COUNSELOR
+  TRAINER
+}
+
+enum TaskKind {
+  PRACTICAL
+  KNOWLEDGE
+}
+
+enum AttemptStatus {
+  SUBMITTED // practical: waiting for a trainer (an AI draft may be attached)
+  MODERATED // practical: trainer has confirmed the marks — only now visible to the learner
+  AUTO_MARKED // knowledge: marked by code against the answer key
+}
+
+enum ReportStatus {
+  GENERATING
+  READY
+  FAILED
+}
+
+enum ConsentType {
+  DATA_PROCESSING
+  VOICE_PROCESSING
+  ANALYTICS
+  GUARDIAN_MINOR
+}
+
+enum MentorMessageRole {
+  USER
+  ASSISTANT
+}
+
+// ───────────────────────────── Users ─────────────────────────────
+
+model User {
+  id                String    @id @default(cuid())
+  email             String    @unique
+  passwordHash      String?
+  emailVerified     DateTime?
+  name              String
+  phone             String?
+  age               Int?
+  gender            Gender?
+  location          String?
+  educationLevel    EducationLevel
+  institutionName   String?
+  currentClassYear  String?
+  preferredLanguage String    @default("en")
+  careerGoal        String?
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  profile         UserProfile?
+  assessments     Assessment[]
+  reports         Report[]
+  consents        ConsentRecord[]
+  counselorNotes  CounselorNote[]
+  analyticsEvents AnalyticsEvent[]
+  mentorMessages  MentorMessage[]
+  pathwayEnrollments PathwayEnrollment[]
+
+  @@index([educationLevel])
+  @@index([email])
+  @@map("users")
+}
+
+model UserProfile {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Minor consent (spec §23) — Class 10 users are typically minors.
+  guardianName       String?
+  guardianEmail      String?
+  guardianRelation   String?
+  guardianConsent    Boolean   @default(false)
+  guardianConsentAt  DateTime?
+
+  interests             String[] @default([])
+  skills                 String[] @default([])
+  learningPreferences    String?
+  workEnvironmentPref    String?
+  motivation             String?
+  strengths              String[] @default([])
+  developmentAreas       String[] @default([])
+
+  // Working professional / college fields
+  currentRole                 String?
+  experienceYears             Int?
+  careerSatisfaction          Int?
+  leadershipPreference        String?
+  workStyle                   String?
+  communicationStyle          String?
+  managementVsIC               String?
+  entrepreneurshipInterest    Boolean?
+  careerTransitionInterest    Boolean?
+  longTermAmbition            String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("user_profiles")
+}
+
+model ConsentRecord {
+  id               String      @id @default(cuid())
+  userId           String
+  user             User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  consentType      ConsentType
+  granted          Boolean
+  guardianName     String?
+  guardianRelation String?
+  ipAddress        String?
+  userAgent        String?
+  createdAt        DateTime    @default(now())
+
+  @@index([userId])
+  @@map("consent_records")
+}
+
+// ───────────────────────────── Assessments ─────────────────────────────
+
+model Assessment {
+  id                   String              @id @default(cuid())
+  userId               String
+  user                 User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  framework            AssessmentFramework
+  educationLevelAtTime EducationLevel
+  status               AssessmentStatus    @default(NOT_STARTED)
+
+  currentQuestionIndex Int @default(0)
+
+  // Versioning (spec §46) — keeps old reports reproducible after logic changes.
+  assessmentVersion      String @default("1.0.0")
+  questionBankVersion    String @default("1.0.0")
+  promptVersion          String @default("1.0.0")
+  aiModelVersion         String @default("gemini-3.6-flash")
+  scoringAlgorithmVersion String @default("1.0.0")
+
+  startedAt      DateTime?
+  pausedAt       DateTime?
+  completedAt    DateTime?
+  durationSeconds Int?
+  isDemo         Boolean  @default(false)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  session          AssessmentSession?
+  responses        QuestionResponse[]
+  personalityScore PersonalityScore?
+  recommendations  CareerRecommendation[]
+  report           Report?
+  progress         AssessmentProgress?
+  counselorNotes   CounselorNote[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([framework])
+  @@map("assessments")
+}
+
+model AssessmentSession {
+  id                 String      @id @default(cuid())
+  assessmentId       String      @unique
+  assessment         Assessment  @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  conversationState  Json        @default("{}")
+  questionsAskedIds  String[]    @default([])
+  lastQuestionId     String?
+  inputMethodUsed    InputMethod @default(TEXT)
+  voiceStartedCount  Int         @default(0)
+  voiceCompletedCount Int        @default(0)
+  voiceErrorCount    Int         @default(0)
+  pauseCount         Int         @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("assessment_sessions")
+}
+
+model AssessmentProgress {
+  id                String     @id @default(cuid())
+  assessmentId       String     @unique
+  assessment         Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  registeredAt       DateTime?
+  startedAt          DateTime?
+  reached25At        DateTime?
+  reached50At        DateTime?
+  reached75At        DateTime?
+  completedAt        DateTime?
+  reportGeneratedAt  DateTime?
+  reportViewedAt     DateTime?
+
+  @@map("assessment_progress")
+}
+
+// ───────────────────────────── Questions ─────────────────────────────
+
+model Question {
+  id             String        @id @default(cuid())
+  code           String        @unique // e.g. Q001
+  framework      AssessmentFramework
+  dimension      String        // OPENNESS | E_I | S_N | T_F | J_P | etc.
+  questionType   QuestionType
+  scenarioText   String
+  isScenario     Boolean       @default(true)
+  weight         Float         @default(1.0)
+  difficulty     Int           @default(1) // 1-5
+  educationLevels EducationLevel[]
+  followUpOfId   String?
+  followUpOf     Question?     @relation("QuestionFollowUps", fields: [followUpOfId], references: [id])
+  followUps      Question[]    @relation("QuestionFollowUps")
+  isActive       Boolean       @default(true)
+  version        String        @default("1.0.0")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  responses QuestionResponse[]
+
+  @@index([framework, dimension])
+  @@index([isActive])
+  @@map("questions")
+}
+
+model QuestionResponse {
+  id                  String      @id @default(cuid())
+  assessmentId        String
+  assessment          Assessment  @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  questionId          String?
+  question            Question?   @relation(fields: [questionId], references: [id])
+  questionTextSnapshot String
+  responseText        String
+  inputMethod         InputMethod
+  dimensionSignals    Json        @default("{}")
+  confidence          Float       @default(0)
+  aiReasoningSummary  String?
+  followUpNeeded      Boolean     @default(false)
+  followUpQuestion    String?
+  order               Int
+  respondedAt         DateTime    @default(now())
+  durationMs          Int?
+
+  voiceTranscript VoiceTranscript?
+
+  @@index([assessmentId])
+  // One row per turn: a double-clicked or retried submit cannot record the same turn twice.
+  @@unique([assessmentId, order])
+  @@map("question_responses")
+}
+
+model VoiceTranscript {
+  id                 String           @id @default(cuid())
+  questionResponseId String           @unique
+  questionResponse   QuestionResponse @relation(fields: [questionResponseId], references: [id], onDelete: Cascade)
+  transcript         String
+  audioRetained      Boolean          @default(false) // raw audio discarded unless explicitly configured (spec §6)
+  sttProvider        String           @default("web-speech-api")
+  sttConfidence      Float?
+  processingTimeMs   Int?
+  createdAt          DateTime         @default(now())
+
+  @@map("voice_transcripts")
+}
+
+// ───────────────────────────── Personality & careers ─────────────────────────────
+
+model PersonalityScore {
+  id                String              @id @default(cuid())
+  assessmentId      String              @unique
+  assessment        Assessment          @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  framework         AssessmentFramework
+  bigFive           Json? // { openness: {score, confidence}, ... }
+  mbti              Json? // { E_I: {pole, score, confidence}, ... }
+  mbtiType          String?
+  confidenceOverall Float
+  computedAt        DateTime            @default(now())
+
+  @@map("personality_scores")
+}
+
+model CareerCategory {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  slug        String   @unique
+  description String?
+  icon        String?
+  careers     Career[]
+
+  @@map("career_categories")
+}
+
+model Career {
+  id                 String         @id @default(cuid())
+  categoryId         String
+  category           CareerCategory @relation(fields: [categoryId], references: [id])
+  title              String
+  slug               String         @unique
+  description        String
+  personalityAlignment Json         @default("{}") // weights per MBTI type / Big Five dimension
+  skillsRequired     String[]       @default([])
+  educationPathway   Json           @default("[]")
+  entryLevelRoles    String[]       @default([])
+  growthPath         String[]       @default([])
+  workEnvironment    String?
+  challenges         String?
+  futureOutlook      String?
+  isActive           Boolean        @default(true)
+  // When a person checked this career's description/pathways for accuracy. The mentor can be
+  // limited to reviewed careers only (MENTOR_REVIEWED_CAREERS_ONLY=true).
+  contentReviewedAt  DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  careerSkills    CareerSkill[]
+  recommendations CareerRecommendation[]
+
+  @@index([categoryId])
+  @@map("careers")
+}
+
+model Skill {
+  id       String        @id @default(cuid())
+  name     String        @unique
+  category String?
+  careers  CareerSkill[]
+
+  @@map("skills")
+}
+
+model CareerSkill {
+  id         String @id @default(cuid())
+  careerId   String
+  career     Career @relation(fields: [careerId], references: [id], onDelete: Cascade)
+  skillId    String
+  skill      Skill  @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  importance Int    @default(3) // 1-5
+
+  @@unique([careerId, skillId])
+  @@map("career_skills")
+}
+
+model CareerRecommendation {
+  id            String     @id @default(cuid())
+  assessmentId  String
+  assessment    Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  careerId      String
+  career        Career     @relation(fields: [careerId], references: [id])
+  matchScore    Float
+  reasoning     Json       @default("{}")
+  strengths     String[]   @default([])
+  skillGaps     String[]   @default([])
+  rank          Int
+  createdAt     DateTime   @default(now())
+
+  @@index([assessmentId])
+  @@map("career_recommendations")
+}
+
+// ───────────────────────────── Reports ─────────────────────────────
+
+model Report {
+  id                     String       @id @default(cuid())
+  assessmentId           String       @unique
+  assessment             Assessment   @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  userId                 String
+  user                   User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reportJson             Json // full structured report (spec §11), regenerable without re-running the assessment
+  reportVersion          String       @default("1.0.0")
+  status                 ReportStatus @default(GENERATING)
+  personalityResultLabel String? // e.g. "INTJ" or "Big Five profile"
+  pdfPath                String?
+  generatedAt            DateTime?
+  viewedAt               DateTime?
+  downloadedAt           DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@map("reports")
+}
+
+// ───────────────────────────── AI mentor chat ─────────────────────────────
+
+// One continuous mentor conversation per user (not per assessment/report) — the mentor
+// service pulls in the user's latest completed report as live context on every call rather
+// than pinning the chat to a single report, so old conversations stay relevant across retakes.
+model MentorMessage {
+  id        String            @id @default(cuid())
+  userId    String
+  user      User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role      MentorMessageRole
+  content   String
+  createdAt DateTime          @default(now())
+
+  // Set on a USER message that needs a person to look at it: CRISIS (possible risk to the
+  // student), HUMAN_REQUESTED (asked for a real person) or OUTPUT_GUARD (the AI reply broke a
+  // rule and was cut). Cleared from the admin queue by setting reviewedAt.
+  flagReason   String?
+  reviewedAt   DateTime?
+  reviewedById String?
+
+  @@index([userId, createdAt])
+  @@index([flagReason, reviewedAt])
+  @@map("mentor_messages")
+}
+
+// ───────────────────────────── Admin & counselor ─────────────────────────────
+
+model AdminUser {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  passwordHash String
+  name         String
+  role         AdminRole @default(ADMIN)
+  isActive     Boolean   @default(true)
+  lastLoginAt  DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  counselorNotes CounselorNote[]
+
+  @@map("admin_users")
+}
+
+model CounselorNote {
+  id           String     @id @default(cuid())
+  counselorId  String
+  counselor    AdminUser  @relation(fields: [counselorId], references: [id])
+  userId       String
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  assessmentId String?
+  assessment   Assessment? @relation(fields: [assessmentId], references: [id])
+  note         String
+  createdAt    DateTime   @default(now())
+
+  @@index([userId])
+  @@map("counselor_notes")
+}
+
+// ───────────────────────────── Analytics & settings ─────────────────────────────
+
+model AnalyticsEvent {
+  id         String   @id @default(cuid())
+  userId     String?
+  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  eventName  String
+  properties Json     @default("{}")
+  createdAt  DateTime @default(now())
+
+  @@index([eventName])
+  @@index([createdAt])
+  @@map("analytics_events")
+}
+
+model SystemSettings {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     Json
+  updatedAt DateTime @updatedAt
+
+  @@map("system_settings")
+}
+
+// ─── Pathways & practical skill checks (Phase 4) ─────────────────────────────
+// A pathway is one domain + role level (pilot: Digital Marketing, entry level). Its skills,
+// tasks and marking criteria are authored with trainers/employers; contentStatus records
+// whether a trainer has signed the content off. Learners choose a pathway themselves.
+
+model Pathway {
+  id            String    @id @default(cuid())
+  slug          String    @unique
+  title         String
+  roleLevel     String
+  description   String
+  contentStatus String    @default("DRAFT") // DRAFT | TRAINER_REVIEWED
+  reviewedBy    String?
+  reviewedAt    DateTime?
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  skills      PathwaySkill[]
+  tasks       SkillTask[]
+  enrollments PathwayEnrollment[]
+
+  @@map("pathways")
+}
+
+model PathwaySkill {
+  id                  String  @id @default(cuid())
+  pathwayId           String
+  pathway             Pathway @relation(fields: [pathwayId], references: [id], onDelete: Cascade)
+  code                String
+  name                String
+  description         String
+  order               Int
+  levelDescriptors    Json // [{ level: 1-4, label, descriptor }]
+  learningSuggestions Json @default("[]") // [{ kind: 'LEARN' | 'PROJECT', text }]
+
+  @@unique([pathwayId, code])
+  @@map("pathway_skills")
+}
+
+model SkillTask {
+  id           String   @id @default(cuid())
+  pathwayId    String
+  pathway      Pathway  @relation(fields: [pathwayId], references: [id], onDelete: Cascade)
+  code         String // e.g. DM-P1-A
+  kind         TaskKind
+  // Tasks in the same group are equivalent forms (A for the first check, B for the reassessment),
+  // so progress compares like with like without repeating the same task.
+  variantGroup String
+  variant      String // A | B
+  title        String
+  brief        String
+  skillCodes   String[]
+  rubric       Json     @default("[]") // PRACTICAL: [{ id, skillCode, criterion, levels: [{ level, descriptor }] }]
+  options      Json? // KNOWLEDGE: string[]
+  answerIndex  Int? // KNOWLEDGE: index into options (never sent to the browser)
+  order        Int
+  isActive     Boolean  @default(true)
+
+  attempts TaskAttempt[]
+
+  @@unique([pathwayId, code])
+  @@index([pathwayId, variant])
+  @@map("skill_tasks")
+}
+
+model PathwayEnrollment {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pathwayId String
+  pathway   Pathway  @relation(fields: [pathwayId], references: [id], onDelete: Cascade)
+  round     Int      @default(1) // 1 = first check (variant A), 2 = reassessment (variant B)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  attempts TaskAttempt[]
+
+  @@unique([userId, pathwayId])
+  @@map("pathway_enrollments")
+}
+
+model TaskAttempt {
+  id            String            @id @default(cuid())
+  enrollmentId  String
+  enrollment    PathwayEnrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  taskId        String
+  task          SkillTask         @relation(fields: [taskId], references: [id])
+  round         Int
+  response      String
+  status        AttemptStatus
+  isCorrect     Boolean? // KNOWLEDGE only
+  // PRACTICAL: AI suggestion for the trainer — { [criterionId]: { level, evidence, feedback } }.
+  // Never shown to the learner; only finalMarks (set by a trainer) count.
+  aiDraft       Json?
+  finalMarks    Json? // { [criterionId]: { level, evidence, feedback } }
+  trainerNote   String?
+  moderatedById String?
+  moderatedAt   DateTime?
+  submittedAt   DateTime          @default(now())
+
+  @@unique([enrollmentId, taskId])
+  @@index([status])
+  @@map("task_attempts")
+}
