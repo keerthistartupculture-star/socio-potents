@@ -325,7 +325,9 @@ async function main() {
   // Render). Without it, a new account gets a random password printed once. Emails are stored
   // lowercased because the admin login lowercases what is typed.
   const adminEmail = (process.env.SEED_ADMIN_EMAIL || 'admin@careercompass.local').trim().toLowerCase();
-  const adminPassword = process.env.SEED_ADMIN_PASSWORD;
+  // Trimmed: a space pasted into the hosting dashboard by accident would otherwise become part of
+  // the password, and logging in with what was "typed" would always fail.
+  const adminPassword = process.env.SEED_ADMIN_PASSWORD?.trim();
   const existingAdmin = await prisma.adminUser.findUnique({ where: { email: adminEmail } });
   if (adminPassword && adminPassword.length < 8) {
     console.log('SEED_ADMIN_PASSWORD must be at least 8 characters — ignored.');

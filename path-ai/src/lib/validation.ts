@@ -130,7 +130,8 @@ export const careerUpsertSchema = z.object({
 
 export const adminLoginSchema = z.object({
   email: z.string().trim().email(),
-  password: z.string().min(8),
+  // Trimmed like SEED_ADMIN_PASSWORD in the seed, so a stray space on either side can't lock the admin out.
+  password: z.string().trim().min(8),
 });
 
 export const mentorMessageSchema = z.object({
