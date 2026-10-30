@@ -3,6 +3,7 @@
 import { BASE_PATH } from '@/lib/basePath';
 import { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { signIn } from 'next-auth/react';
 import { Button } from '@/components/ui/Button';
 import { Input, Label, Select, Textarea } from '@/components/ui/Input';
@@ -36,7 +37,8 @@ export function RegisterForm() {
     educationLevel: 'UNDERGRADUATE', institutionName: '', currentClassYear: '', preferredLanguage: 'en',
     careerGoal: '', guardianName: '', guardianEmail: '', guardianRelation: '',
   });
-  const [consents, setConsents] = useState({ dataProcessing: false, analytics: true, guardianMinor: false });
+  // Optional consents start unticked: the person has to opt in, not opt out.
+  const [consents, setConsents] = useState({ dataProcessing: false, analytics: false, guardianMinor: false });
 
   const isMinor = form.educationLevel === 'CLASS_10';
 
@@ -254,6 +256,13 @@ export function RegisterForm() {
 
             <fieldset className="space-y-2 rounded-lg border border-border p-4 text-sm">
               <legend className="px-1 font-medium">Consent</legend>
+              <p className="text-muted-foreground">
+                Please read the{' '}
+                <Link href="/privacy" target="_blank" className="font-medium text-foreground underline">
+                  privacy notice
+                </Link>{' '}
+                (opens in a new tab): what we collect, how AI is used, how long we keep it and how to have it deleted.
+              </p>
               <CheckField
                 name="consents.dataProcessing"
                 error={errors['consents.dataProcessing']}

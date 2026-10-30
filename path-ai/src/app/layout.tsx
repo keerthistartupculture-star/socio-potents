@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { Fraunces, IBM_Plex_Mono, Public_Sans } from 'next/font/google';
 import './globals.css';
 import { Providers } from './providers';
@@ -50,6 +51,16 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <Providers>
           <SiteHeader branding={branding} />
           <main>{children}</main>
+          <footer className="border-t border-border px-4 py-6 text-center text-xs text-muted-foreground">
+            {branding.productName} by Socio Potents ·{' '}
+            <Link href="/privacy" className="underline hover:text-foreground">
+              Privacy notice
+            </Link>{' '}
+            ·{' '}
+            <a href="mailto:team@startupculture.co.in" className="underline hover:text-foreground">
+              team@startupculture.co.in
+            </a>
+          </footer>
           <MentorChatWidget accentColor={branding.primaryColor} />
         </Providers>
       </body>

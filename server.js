@@ -23,6 +23,13 @@ const ROOT = __dirname;
 const PATH_AI_URL = process.env.PATH_AI_URL || 'http://127.0.0.1:4000';
 
 // ---------------------------------------------------------
+// The old Career Assessment page was replaced by Path AI; send old links and bookmarks there.
+// ---------------------------------------------------------
+app.get(['/career-assessment', '/career-assessment.html'], function (req, res) {
+  res.redirect(301, '/path-ai/assessment/start');
+});
+
+// ---------------------------------------------------------
 // Path AI — must come before the static handler so the
 // path-ai/ source folder is never served as files.
 // ---------------------------------------------------------

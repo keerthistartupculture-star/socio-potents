@@ -63,6 +63,23 @@ export interface TranscriptTurn {
 /** Enough answers to score reliably: the framework minimum with every dimension touched at
  * least once, or twice the minimum regardless (so a lopsided chat still ends). Pure, so the
  * same rule decides "done" on submit and "ready to submit" on resume. */
+// A sentence that judges or interprets the last answer ("That sounds like a constructive way…",
+// "Great!", "It's clear you…"). Praise like that tells the person which answers are "good" and
+// skews the rest of the assessment, so it is dropped even when the model writes it anyway.
+const JUDGING_OPENER =
+  /^(that|this|it|which)('s|’s| is| was| sounds| seems| shows| must| makes| really| definitely)\b|^(great|nice|wonderful|awesome|amazing|impressive|interesting|love that|i love|wow|good for you|what a|sounds like|it'?s clear|clearly)\b/i;
+
+/** Removes leading sentences that praise or interpret the person, keeping the question itself. */
+export function stripJudgingOpeners(message: string): string {
+  let rest = message.trim();
+  for (let i = 0; i < 3; i += 1) {
+    const m = rest.match(/^([^.!?]*[.!])\s+(.+)$/s);
+    if (!m || !JUDGING_OPENER.test(m[1].trim())) break;
+    rest = m[2].trim();
+  }
+  return rest;
+}
+
 /** Enough AI-scored answers for a meaningful report: every trait read at least twice, and at
  * least two-thirds of the answers scored. Below that, traits drift to a meaningless 50. */
 export function hasEnoughScoredAnswers(scored: number, answered: number, coverage: Map<string, number>): boolean {
@@ -315,7 +332,7 @@ export async function getNextQuestion(assessmentId: string) {
           z.object({ next_message: z.string().min(3) }),
           { temperature: 0.75, maxOutputTokens: 300, timeoutMs: 8000 }
         );
-        message = opening.next_message;
+        message = stripJudgingOpeners(opening.next_message);
       } catch (err) {
         logger.warn('Opening message generation failed, using example scenario text', { assessmentId, error: String(err) });
       }
@@ -495,7 +512,7 @@ export async function submitResponse(params: {
         confidence: turn.confidence,
         reasoning_summary: turn.reasoning_summary,
       };
-      nextMessage = turn.next_message;
+      nextMessage = stripJudgingOpeners(turn.next_message);
       nextDimension = dims.includes(turn.next_dimension) ? turn.next_dimension : suggestedNextDimension;
       // Safety net: if the model still repeated (or reworded) an earlier question, swap in a
       // fresh scenario for the least-covered dimension instead of showing the repeat.
@@ -571,10 +588,10 @@ export async function submitResponse(params: {
     nextMessage = nextExample;
     nextDimension = suggestedNextDimension;
   } else if (!nextMessage.includes('?')) {
-    // The model sometimes replies with only a comment ("That shows real kindness.") and no
-    // question, leaving the student nothing to answer. Keep the comment, then ask a real question.
+    // The model sometimes replies with only a comment and no question, leaving the student nothing
+    // to answer. Ask a real question; a neutral comment may stay in front, a judging one may not.
     logger.warn('Model reply had no question, adding a scenario question', { assessmentId, nextMessage });
-    nextMessage = `${nextMessage} ${nextExample}`;
+    nextMessage = JUDGING_OPENER.test(nextMessage.trim()) ? nextExample : `${nextMessage} ${nextExample}`;
     nextDimension = suggestedNextDimension;
   }
   const nextDimensionStreak = nextDimension === lastDimension ? lastDimensionStreak + 1 : 1;
@@ -669,6 +686,25 @@ const rescoreSchema = z.object({
 /** Answers whose AI reading failed during the chat (e.g. the provider's quota was hit) are saved
  * with no signal, so they would silently drop out of the person's result. One batch call at submit
  * scores them; if it fails too they stay unscored, exactly as before. */
+/**
+ * Replaces one saved answer from the review screen, before submitting. Its old reading is cleared,
+ * so the new wording is scored with the other unscored answers when the assessment is submitted.
+ */
+export async function editAnswer(assessmentId: string, order: number, responseText: string) {
+  const assessment = await prisma.assessment.findUniqueOrThrow({ where: { id: assessmentId } });
+  if (assessment.status === 'COMPLETED') {
+    throw new AssessmentStateError('This assessment has already been submitted, so its answers can no longer be changed.');
+  }
+  const existing = await prisma.questionResponse.findUnique({ where: { assessmentId_order: { assessmentId, order } } });
+  if (!existing) throw new AssessmentStateError('That answer could not be found. Please refresh the page.');
+  if (existing.responseText.trim() === responseText.trim()) return existing;
+
+  return prisma.questionResponse.update({
+    where: { id: existing.id },
+    data: { responseText, dimensionSignals: {}, confidence: 0, aiReasoningSummary: null },
+  });
+}
+
 export async function rescoreUnscoredAnswers(assessmentId: string, framework: AssessmentFramework) {
   const all = await prisma.questionResponse.findMany({ where: { assessmentId }, orderBy: { order: 'asc' } });
   const unscored = all.filter((r) => Object.keys((r.dimensionSignals as Record<string, number>) ?? {}).length === 0);

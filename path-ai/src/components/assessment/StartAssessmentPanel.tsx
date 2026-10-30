@@ -60,7 +60,7 @@ export function StartAssessmentPanel({
         <CardContent className="space-y-5">
           <p className="text-muted-foreground">
             You will take the <strong>{framework === 'BIG_FIVE' ? 'Big Five' : 'MBTI-style'}</strong> assessment
-            through a natural chat conversation of about 15-20 short questions (roughly 10 minutes). Every
+            through a natural chat conversation of about 15–16 short questions (roughly 10–15 minutes). Every
             answer is saved as soon as you send it, so you can leave and continue later. At the end you review
             your answers and press <strong>Submit</strong> to get your report.
           </p>

@@ -22,20 +22,23 @@ Write like you're actually texting someone, not composing a paragraph:
   must be short and casual too — never longer or more formal than what they're writing to you.
 - Plain, everyday words. No flowery or corporate phrasing.`;
 
-// The other half of feeling like a conversation rather than an interrogation: the assistant has
-// to put something of its own in, not only extract. A chat where every single message ends in a
-// question mark reads as a form being filled out, however casual the wording is.
-const TWO_WAY_RULES = `
-Give something back, don't only ask:
-- Not every message should be a question. Regularly say what you're actually noticing about them
-  — a small observation, a playful guess, something you relate to — and let them confirm, correct,
-  or run with it. "Sounds like you'd rather learn something useless but fascinating than something
-  practical." invites a reply just as well as a question does, and feels far more like a person.
-- If you have picked up on a pattern across what they've told you so far, say it out loud. Being
-  seen accurately is the most engaging thing that can happen in a conversation like this.
-- Never ask two questions in one message.
-- Never stack a question onto an observation just to be safe — if you make an observation, let it
-  stand on its own and trust them to respond to it.`;
+// This is an assessment, so the interviewer must stay neutral. Praise ("That shows real
+// empathy"), labels ("Sounds like you're a planner") or hints at a "better" answer teach the
+// person what to say next and skew their later answers — testers flagged exactly that.
+const NEUTRAL_RULES = `
+Stay a neutral interviewer:
+- No praise, compliments, approval or judgement of any answer ("great", "impressive", "that's a
+  real strength", "that shows you care"). Every answer is equally fine.
+- Never tell them what their answer says about them, and never guess or name their personality,
+  traits or type ("sounds like you're a planner", "you're clearly a people person").
+- At most a brief, neutral acknowledgement before the question — "Got it.", "Thanks.", "Okay." —
+  or none at all.
+- End every message with exactly one question. Never ask two questions in one message.
+- Keep questions balanced: offer both sides equally ("plan ahead or decide as you go?") or keep
+  them open, and never hint which answer is expected or preferred.
+- No yes/no questions that assume something about them or a benefit ("Do you find that focus on
+  harmony keeps morale high?", "Does keeping such a tight grip help you?"). Ask "how" or "which"
+  instead, or give two options of equal weight.`;
 
 // Which end of the scale means what. personalityService reads MBTI signals as negative = first
 // letter, positive = second letter, and Big Five as 0 = low, 1 = high. Without this spelled out
@@ -72,6 +75,7 @@ situational "what would you do" scenario, or just as easily a plain, open questi
 own opinions, habits, or preferences ("What's something you..." / "How do you usually...") — a
 real person starting a chat doesn't only ever pose hypothetical scenarios.
 ${CHAT_STYLE_RULES}
+${NEUTRAL_RULES}
 
 Example scenario for this dimension, given only as a style/tone reference — do not copy it or
 closely resemble it, and don't feel bound to the scenario format it uses: ${JSON.stringify(exampleScenario)}
@@ -149,7 +153,7 @@ NO REPEATS (this matters more than anything else):
 - Never go back to a situation or life area already covered above (weekends, exams, group
   projects, friends arguing, etc.), not even to probe a different dimension. Pick a fresh
   part of their life: hobbies, family, food, travel, games, online life, chores, sports, money,
-  future dreams, school subjects, etc.
+  future plans, and their studies or work (whichever fits the person — see the audience above).
 - A follow-up (option a) must dig into something NEW they just said. Never re-ask the original
   question in other words.
 
@@ -163,25 +167,22 @@ TASK, in one response:
    ${signalScaleGuide(lastDimension)} Score only what this answer actually shows; if it says
    nothing about this dimension, use the neutral value with low confidence.
 2. Decide what to say next — exactly one of:
-   a) Stay on this topic: react genuinely to what they said, then ask a natural follow-up that
-      digs a little deeper — "What made you feel that way?", "What happened after that?", "What
-      do you think about...?" — building on their actual words, not a generic prompt. Use
-      "${lastDimension}" as "next_dimension".
+   a) Stay on this topic: ask a natural follow-up that digs a little deeper — "What made you
+      choose that?", "What happened after that?", "How do you usually handle...?" — building on
+      their actual words, not a generic prompt. Use "${lastDimension}" as "next_dimension".
    b) Move on: transition into a new scenario or open question probing dimension
       "${suggestedNextDimension}" (the least-covered so far) — and use "${suggestedNextDimension}"
-      as "next_dimension". Open with a genuine reaction in a FEW WORDS ONLY — "Nice!", "Ha, fair.",
-      "Makes sense." — never a full explanatory sentence about what they said, then move straight
-      to the new topic in its own short sentence. It doesn't need to be a hypothetical "would you
-      rather" scenario — a plain, open question about their own opinions or habits works just as
-      well and often reads more like a real chat. If no natural connection exists, skip the
-      reaction and just ask plainly rather than forcing a contrived link.
+      as "next_dimension". You may open with a neutral acknowledgement of a word or two — "Got it.",
+      "Thanks." — never a comment on what their answer means, then move straight to the new topic
+      in its own short sentence. It doesn't need to be a hypothetical "would you rather" scenario —
+      a plain, open question about their own opinions or habits works just as well and often reads
+      more like a real chat.
       Example scenario for that next dimension, given only as a style/tone reference — do not
       copy it, closely resemble it, or feel bound to its scenario format: ${JSON.stringify(exampleScenario)}
 
-   Either way, your message does NOT have to be a question — see the rules below. Reflecting back
-   something true you've noticed about them works for both options and is often the better move.
+   Either way, your message must end with exactly one question for them to answer.
 ${CHAT_STYLE_RULES}
-${TWO_WAY_RULES}
+${NEUTRAL_RULES}
 
 Valid dimension keys: ${JSON.stringify(validDimensions)}. "next_dimension" must be exactly one of
 these.

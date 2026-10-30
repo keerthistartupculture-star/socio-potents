@@ -1,7 +1,7 @@
 import { cn } from '@/lib/utils';
 
 const STATS = [
-  { value: '5–7 min', label: 'average session' },
+  { value: '10–15 min', label: 'typical session' },
   { value: '2', label: 'frameworks — Big Five & MBTI' },
   { value: '100%', label: 'chat-based, no forms' },
   { value: 'PDF', label: 'report, yours to keep' },

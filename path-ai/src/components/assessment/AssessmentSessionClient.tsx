@@ -4,7 +4,7 @@ import { BASE_PATH } from '@/lib/basePath';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Send, LogOut, CheckCircle2, RotateCcw, WifiOff } from 'lucide-react';
+import { Send, LogOut, CheckCircle2, RotateCcw, WifiOff, Pencil } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Textarea } from '@/components/ui/Input';
 import { Progress } from '@/components/ui/Progress';
@@ -35,6 +35,97 @@ function readDraft(assessmentId: string, question: string): string {
   }
 }
 
+/** One answer on the review screen, with an Edit button to change it before submitting. */
+function ReviewAnswer({
+  assessmentId,
+  turn,
+  disabled,
+  onEditing,
+  onSaved,
+}: {
+  assessmentId: string;
+  turn: Turn;
+  disabled: boolean;
+  onEditing: (order: number, editing: boolean) => void;
+  onSaved: (order: number, answer: string) => void;
+}) {
+  const [editing, setEditing] = useState(false);
+  const [value, setValue] = useState(turn.answer);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  function open(next: boolean) {
+    setEditing(next);
+    setError(null);
+    if (next) setValue(turn.answer);
+    onEditing(turn.order, next);
+  }
+
+  async function save() {
+    if (!value.trim()) {
+      setError('Please type an answer before saving.');
+      return;
+    }
+    setSaving(true);
+    setError(null);
+    try {
+      const res = await fetch(`${BASE_PATH}/api/assessment/${assessmentId}/answer`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ order: turn.order, responseText: value }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(data.error ?? 'Your change was not saved. Please try again.');
+        return;
+      }
+      onSaved(turn.order, data.answer ?? value.trim());
+      open(false);
+    } catch {
+      setError('Network error — your change was not saved. Please try again.');
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <li className="rounded-lg border border-border bg-muted/30 p-3 text-sm">
+      <p className="font-medium">
+        <span className="text-muted-foreground">Q{turn.order}. </span>
+        {turn.question}
+      </p>
+      {editing ? (
+        <div className="mt-2 space-y-2">
+          <label htmlFor={`edit-answer-${turn.order}`} className="sr-only">
+            Edit your answer to question {turn.order}
+          </label>
+          <Textarea id={`edit-answer-${turn.order}`} value={value} onChange={(e) => setValue(e.target.value)} rows={3} maxLength={5000} disabled={saving} autoFocus />
+          {error && (
+            <p role="alert" className="text-xs text-destructive">
+              {error}
+            </p>
+          )}
+          <div className="flex gap-2">
+            <Button size="sm" onClick={save} disabled={saving}>
+              {saving ? 'Saving…' : 'Save'}
+            </Button>
+            <Button size="sm" variant="ghost" onClick={() => open(false)} disabled={saving}>
+              Cancel
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <div className="mt-1.5 flex items-start justify-between gap-3">
+          <p className="whitespace-pre-wrap">{turn.answer}</p>
+          <Button size="sm" variant="ghost" onClick={() => open(true)} disabled={disabled} aria-label={`Edit your answer to question ${turn.order}`}>
+            <Pencil className="h-3.5 w-3.5" aria-hidden /> Edit
+          </Button>
+        </div>
+      )}
+    </li>
+  );
+}
+
 function writeDraft(assessmentId: string, question: string, text: string) {
   try {
     if (text) localStorage.setItem(draftKey(assessmentId), JSON.stringify({ question, text }));
@@ -55,6 +146,8 @@ export function AssessmentSessionClient({ assessmentId }: { assessmentId: string
   const [loadError, setLoadError] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [online, setOnline] = useState(true);
+  // Review-screen answers currently open for editing; Submit waits until they are saved or cancelled.
+  const [editingOrders, setEditingOrders] = useState<number[]>([]);
   const answerStartRef = useRef<number>(0);
   const busyRef = useRef(false); // blocks double-send / double-submit before React re-renders
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -235,19 +328,22 @@ export function AssessmentSessionClient({ assessmentId }: { assessmentId: string
           <div className="rounded-xl border border-border bg-card p-4">
             <h1 id="review-heading" className="text-lg font-semibold">Review your answers</h1>
             <p className="mt-1 text-sm text-muted-foreground">
-              That&apos;s enough to build your report. Read through what you shared, then press Submit. Your report is
-              created only when you submit.
+              That&apos;s enough to build your report. Read through what you shared — use Edit to change any answer —
+              then press Submit. Your report is created only when you submit.
             </p>
           </div>
           <ol className="space-y-3">
             {history.map((t) => (
-              <li key={t.order} className="rounded-lg border border-border bg-muted/30 p-3 text-sm">
-                <p className="font-medium">
-                  <span className="text-muted-foreground">Q{t.order}. </span>
-                  {t.question}
-                </p>
-                <p className="mt-1.5 whitespace-pre-wrap">{t.answer}</p>
-              </li>
+              <ReviewAnswer
+                key={t.order}
+                assessmentId={assessmentId}
+                turn={t}
+                disabled={phase === 'completing'}
+                onEditing={(order, editing) =>
+                  setEditingOrders((list) => (editing ? [...list.filter((o) => o !== order), order] : list.filter((o) => o !== order)))
+                }
+                onSaved={(order, answer) => setHistory((h) => h.map((x) => (x.order === order ? { ...x, answer } : x)))}
+              />
             ))}
           </ol>
           {submitError && (
@@ -259,9 +355,13 @@ export function AssessmentSessionClient({ assessmentId }: { assessmentId: string
             <Button variant="ghost" onClick={saveAndExit} disabled={phase === 'completing'}>
               <LogOut className="h-4 w-4" aria-hidden /> Save &amp; exit
             </Button>
-            <Button size="lg" onClick={submitAssessment} disabled={phase === 'completing'}>
+            <Button size="lg" onClick={submitAssessment} disabled={phase === 'completing' || editingOrders.length > 0}>
               <CheckCircle2 className="h-4 w-4" aria-hidden />
-              {phase === 'completing' ? 'Building your report…' : 'Submit and see my report'}
+              {phase === 'completing'
+                ? 'Building your report…'
+                : editingOrders.length > 0
+                  ? 'Save or cancel your edit first'
+                  : 'Submit and see my report'}
             </Button>
           </div>
         </section>

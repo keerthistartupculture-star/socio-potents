@@ -57,7 +57,8 @@ export const registerSchema = z
     consents: z.object({
       dataProcessing: z.literal(true, { errorMap: () => ({ message: 'Please accept the data processing consent to continue.' }) }),
       voiceProcessing: z.boolean().default(false),
-      analytics: z.boolean().default(true),
+      // Opt-in only: a request that leaves it out has not consented.
+      analytics: z.boolean().default(false),
       guardianMinor: z.boolean().optional(),
     }),
   })
@@ -95,6 +96,11 @@ export const respondSchema = z.object({
   responseText: z.string().trim().min(1).max(5000),
   inputMethod: z.literal('TEXT').default('TEXT'),
   durationMs: z.number().int().min(0).max(600_000).optional(),
+});
+
+export const editAnswerSchema = z.object({
+  order: z.number().int().min(1),
+  responseText: z.string().trim().min(1).max(5000),
 });
 
 export const questionUpsertSchema = z.object({

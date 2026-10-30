@@ -35,7 +35,7 @@ export function FrameworkCompare({ accentColor = '#F5C400' }: { accentColor?: st
             <p className="font-semibold">MBTI</p>
           </div>
         </div>
-        <p className="text-xs text-muted-foreground">Four axes, combined into a type — plus interests, skills, and goals for career matching.</p>
+        <p className="text-xs text-muted-foreground">Four axes, combined into a type, used to rank career matches.</p>
         <div className="flex flex-wrap gap-2">
           {MBTI_AXES.map((t) => (
             <span key={t} className="rounded-full border border-border bg-muted/60 px-3 py-1 text-xs font-medium text-foreground">{t}</span>

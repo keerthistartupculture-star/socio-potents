@@ -116,7 +116,7 @@ function messageFor(item: RecoveryItem, productName: string): { subject: string;
     case 'NEVER_STARTED':
       return {
         subject: `${productName}: your career assessment is waiting`,
-        text: `Hi ${firstName},\n\nYou signed up for ${productName} but haven't started your career assessment yet. It's a quick 5-7 minute chat and ends with a personalized career report.\n\nStart here: ${APP_URL}/assessment/start\n\n— ${productName}`,
+        text: `Hi ${firstName},\n\nYou signed up for ${productName} but haven't started your career assessment yet. It's a 10–15 minute chat and ends with a personalized career report.\n\nStart here: ${APP_URL}/assessment/start\n\n— ${productName}`,
       };
     case 'STALLED_IN_PROGRESS':
       return {

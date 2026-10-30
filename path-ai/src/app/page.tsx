@@ -12,15 +12,15 @@ const steps = [
   { title: 'Tell us about yourself', desc: 'Education level and goals — this decides whether you get Big Five or MBTI.', icon: UserRound },
   { title: 'Talk to AI', desc: 'A natural chat conversation, not a boring form.', icon: MessageSquare },
   { title: 'Discover your personality', desc: 'Big Five or MBTI, scored automatically and matched to your education level.', icon: Brain },
-  { title: 'Explore careers', desc: 'Matches built from personality, interests, and skills together.', icon: Compass },
+  { title: 'Explore careers', desc: 'Careers ranked by how well your personality preferences fit each one.', icon: Compass },
   { title: 'Get your roadmap', desc: 'A personalized report with a 30/60/90-day action plan.', icon: Map },
 ];
 
 const audiences = [
   { title: 'Class 10 Students', framework: 'Big Five', desc: 'Personality mapped through situational, story-based scenarios.', icon: School },
   { title: 'Class 12 Students', framework: 'MBTI', desc: 'MBTI-based exploration to guide stream and degree choices.', icon: GraduationCap },
-  { title: 'College Students', framework: 'MBTI', desc: 'MBTI plus interests, skills, and career goals for your next step.', icon: Building2 },
-  { title: 'Working Professionals', framework: 'MBTI', desc: 'MBTI plus role, leadership style, and long-term career direction.', icon: Briefcase },
+  { title: 'College Students', framework: 'MBTI', desc: 'MBTI-style preferences, explored through study and everyday situations, to guide your next step.', icon: Building2 },
+  { title: 'Working Professionals', framework: 'MBTI', desc: 'MBTI-style preferences, explored through workplace situations, to inform your career direction.', icon: Briefcase },
 ];
 
 export default async function LandingPage() {
@@ -130,7 +130,7 @@ export default async function LandingPage() {
       <section className="mx-auto max-w-4xl px-4 pb-16 pt-2 sm:pb-20 sm:pt-4">
         <div className="flex flex-col items-center gap-5 rounded-lg border border-border bg-secondary/60 px-6 py-12 text-center sm:px-12">
           <h2 className="font-serif text-2xl font-semibold sm:text-3xl">Ready to find your direction?</h2>
-          <p className="text-muted-foreground">Takes about 5-7 minutes. Your progress is saved automatically.</p>
+          <p className="text-muted-foreground">Takes about 10–15 minutes. Your progress is saved automatically.</p>
           <Link href="/register">
             <Button size="lg" className="font-semibold text-black hover:brightness-95" style={{ backgroundColor: branding.primaryColor }}>
               Start Career Assessment

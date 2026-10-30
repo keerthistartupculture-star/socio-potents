@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { hasEnoughScoredAnswers, isReadyToSubmit, isReplayOfLastTurn, sanitizeSignals } from './assessmentService';
+import { hasEnoughScoredAnswers, isReadyToSubmit, isReplayOfLastTurn, sanitizeSignals, stripJudgingOpeners } from './assessmentService';
 
 const coverage = (counts: number[]) => new Map(counts.map((n, i) => [`D${i}`, n]));
 
@@ -41,6 +41,28 @@ describe('hasEnoughScoredAnswers', () => {
 
   it('builds the report at exactly two-thirds scored with every trait read twice', () => {
     expect(hasEnoughScoredAnswers(10, 15, coverage([2, 2, 2, 2, 2]))).toBe(true);
+  });
+});
+
+describe('stripJudgingOpeners', () => {
+  it('drops praise or interpretation before the question (seen in testing)', () => {
+    expect(
+      stripJudgingOpeners('That sounds like a constructive way to handle things. How do you usually give feedback to a colleague?')
+    ).toBe('How do you usually give feedback to a colleague?');
+    expect(stripJudgingOpeners("Great! It's clear you love planning. Which do you prefer, A or B?")).toBe('Which do you prefer, A or B?');
+  });
+
+  it('keeps a neutral acknowledgement', () => {
+    expect(stripJudgingOpeners('Got it. Do you plan ahead or decide as you go?')).toBe('Got it. Do you plan ahead or decide as you go?');
+  });
+
+  it('keeps a scenario that sets up the question', () => {
+    const scenario = 'A colleague makes a mistake that delays a team deliverable. How do you address it with them?';
+    expect(stripJudgingOpeners(scenario)).toBe(scenario);
+  });
+
+  it('leaves a lone sentence alone (the no-question fallback handles that)', () => {
+    expect(stripJudgingOpeners('That shows real kindness.')).toBe('That shows real kindness.');
   });
 });
 

@@ -50,7 +50,9 @@ AND current role, experience, skills, career satisfaction, career goals, leaders
 preference, work style, communication style, preferred environment, career-transition
 interest, management vs individual-contributor preference, entrepreneurship interest, and
 long-term ambition. Speak as a peer, respecting their experience — avoid a "student
-questionnaire" tone. ${SAFEGUARD_CLAUSE}`.trim();
+questionnaire" tone. Use workplace and adult-life situations (colleagues, managers, clients,
+meetings, deadlines, projects at work, career moves). Never mention school, classes, exams,
+marks, grades, teachers, professors, homework or assignments. ${SAFEGUARD_CLAUSE}`.trim();
 
 export function getSystemPromptForFramework(
   educationLevel:

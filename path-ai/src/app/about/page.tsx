@@ -18,8 +18,8 @@ const aiProcessSteps = [
 const audiences = [
   { title: 'Class 10 Students', desc: 'The Big Five model, explored through situational and story-based scenarios rather than direct personality questions — built for how 14-16 year-olds actually think about themselves.', icon: School },
   { title: 'Class 12 Students', desc: 'MBTI-style exploration to help you weigh a stream, degree, or entrance-exam path with more self-awareness than a coin flip.', icon: GraduationCap },
-  { title: 'College Students', desc: 'MBTI plus your actual interests, skills, learning style, and industry preferences — not personality in a vacuum.', icon: Building2 },
-  { title: 'Working Professionals', desc: 'MBTI plus your role, leadership style, and long-term ambition, including honest signals on management vs. IC and entrepreneurship interest.', icon: Briefcase },
+  { title: 'College Students', desc: 'MBTI-style preferences explored through study and everyday situations, with your career goal used to explain the matches.', icon: Building2 },
+  { title: 'Working Professionals', desc: 'MBTI-style preferences explored through workplace situations, with your career goal used to explain the matches.', icon: Briefcase },
 ];
 
 const principles = [
@@ -35,7 +35,7 @@ const principles = [
   },
   {
     title: 'Built with real counselling logic',
-    desc: 'Career matches combine personality with your interests, skills, academic preferences, and goals — the same inputs a human counsellor would actually ask about.',
+    desc: 'Career matches are ranked by how closely your personality preferences fit each career, and your career goal (if you share one) shapes the explanations. It describes preferences — it does not test your skills or knowledge.',
     icon: Users,
   },
 ];
@@ -173,9 +173,13 @@ export default async function AboutPage() {
             </div>
             <h2 className="text-2xl font-semibold">Your data, handled carefully</h2>
             <p className="mt-4 text-muted-foreground">
-              Your answers are used only to build your assessment and report. You&apos;ll see exactly
-              what&apos;s collected and why before your assessment starts, and for Class 10 students,
-              a parent or guardian has to consent before anything begins.
+              Your answers are used to build your assessment and report, with the help of Google&apos;s
+              Gemini AI. The{' '}
+              <Link href="/privacy" className="font-medium text-foreground underline">
+                privacy notice
+              </Link>{' '}
+              explains what&apos;s collected, how long it&apos;s kept and how to have it deleted, and for
+              Class 10 students a parent or guardian has to consent before anything begins.
             </p>
             <p className="mt-4 text-muted-foreground">
               Your report belongs to you: view it, download it as a PDF, or come back and retake the
@@ -210,7 +214,7 @@ export default async function AboutPage() {
         <BlobAccent className="pointer-events-none absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 opacity-[0.06]" />
         <div className="relative z-10">
           <h2 className="text-2xl font-semibold">See where your answers lead</h2>
-          <p className="mt-3 text-muted-foreground">5-7 minutes, saved automatically, yours to revisit anytime.</p>
+          <p className="mt-3 text-muted-foreground">About 10–15 minutes, saved automatically, yours to revisit anytime.</p>
           <Link href="/register" className="mt-6 inline-block">
             <Button size="lg" className="font-semibold text-black hover:brightness-95" style={{ backgroundColor: branding.primaryColor }}>
               Start Career Assessment

@@ -112,7 +112,7 @@ export default async function DashboardPage() {
               </div>
               <div>
                 <p className="font-semibold">You have not started an assessment yet</p>
-                <p className="mt-1 text-sm text-muted-foreground">About 10 minutes of chat — every answer is saved as you go.</p>
+                <p className="mt-1 text-sm text-muted-foreground">About 10–15 minutes of chat — every answer is saved as you go.</p>
               </div>
               <Link
                 href="/assessment/start"

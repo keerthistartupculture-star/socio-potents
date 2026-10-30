@@ -285,7 +285,7 @@ function ReportDocument({ report }: { report: any }) {
         { style: styles.tiles },
         ...[
           ['CAME THROUGH MOST CLEARLY', strengths[0]?.label ?? '-'],
-          ['STUDY IDEAS', studyHeadline],
+          [copy.studyLabel.toUpperCase(), studyHeadline],
           ['CAREER AREA TO EXPLORE FIRST', areas[0]?.area ?? '-'],
         ].map(([label, value]) =>
           h(View, { key: label, style: styles.tile }, h(Text, { style: styles.tileLabel }, label), h(Text, { style: styles.tileValue }, value))
@@ -323,7 +323,7 @@ function ReportDocument({ report }: { report: any }) {
           )
         : null,
 
-      h(Text, { style: styles.h2, minPresenceAhead: 160 }, 'Study ideas to try'),
+      h(Text, { style: styles.h2, minPresenceAhead: 160 }, copy.studyTitle),
       h(Text, { style: styles.note }, STUDY_NOTE),
       h(
         View,

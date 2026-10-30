@@ -52,13 +52,16 @@ const bigFiveQuestions: { dimension: string; text: string }[] = [
 // 10 scenario questions per dichotomy = 40 total (spec §37 requires >= 40).
 // signalHint: which pole a "yes/typical" answer leans toward, used only as seed metadata for admins.
 
-const mbtiQuestions: { dimension: string; text: string }[] = [
+// audience: 'students' = school/college wording (Class 12 to postgraduate only); 'professionals' =
+// the workplace version of such a question. No audience = suitable for everyone.
+const STUDENT_LEVELS: EducationLevel[] = ['CLASS_12', 'DIPLOMA', 'UNDERGRADUATE', 'POSTGRADUATE'];
+const mbtiQuestions: { dimension: string; text: string; audience?: 'students' | 'professionals' }[] = [
   // E / I
   { dimension: 'E_I', text: 'After a full day of classes or meetings, what genuinely recharges you — being around people, or having time alone?' },
   { dimension: 'E_I', text: 'You are assigned to a new group project team. Do you prefer to speak up early to get to know people, or observe first before contributing?' },
   { dimension: 'E_I', text: 'When you are stuck on a tough problem, do you usually think it through out loud with someone, or work it out silently first?' },
   { dimension: 'E_I', text: 'Describe your ideal Saturday — who is it with, and how much of it is planned versus spontaneous?' },
-  { dimension: 'E_I', text: 'In a study group, are you more likely to lead the discussion or contribute when directly asked?' },
+  { dimension: 'E_I', text: 'In a study group, are you more likely to lead the discussion or contribute when directly asked?', audience: 'students' },
   { dimension: 'E_I', text: 'You have been invited to two events on the same night — a large gathering, or a small get-together with 2-3 close friends. Which pulls you more, and why?' },
   { dimension: 'E_I', text: 'How do you feel after spending an entire day mostly by yourself — energized, neutral, or drained?' },
   { dimension: 'E_I', text: 'When you have exciting news, do you want to share it immediately with several people, or process it yourself first?' },
@@ -66,19 +69,19 @@ const mbtiQuestions: { dimension: string; text: string }[] = [
   { dimension: 'E_I', text: 'If you had to choose a work style permanently, would you pick a bustling open office or a quiet independent setup? Why?' },
   // S / N
   { dimension: 'S_N', text: 'When learning something new, do you prefer concrete step-by-step instructions, or understanding the big-picture concept first?' },
-  { dimension: 'S_N', text: 'You are reading a case study for class. Do you focus more on the specific facts and details, or on the underlying patterns and possibilities?' },
+  { dimension: 'S_N', text: 'You are reading a case study for class. Do you focus more on the specific facts and details, or on the underlying patterns and possibilities?', audience: 'students' },
   { dimension: 'S_N', text: 'When planning a project, do you trust past experience and proven methods, or are you drawn to trying a novel approach?' },
-  { dimension: 'S_N', text: 'A professor asks a hypothetical "what if" question with no clear answer. How do you feel about engaging with it?' },
+  { dimension: 'S_N', text: 'A professor asks a hypothetical "what if" question with no clear answer. How do you feel about engaging with it?', audience: 'students' },
   { dimension: 'S_N', text: 'Do you tend to notice small practical details others miss, or big-picture connections others miss? Give an example.' },
   { dimension: 'S_N', text: 'When giving directions or explaining something, do you give precise, literal steps, or a general sense/analogy?' },
-  { dimension: 'S_N', text: 'You are choosing between two courses: one very structured with clear syllabus, one exploratory and open-ended. Which appeals more?' },
+  { dimension: 'S_N', text: 'You are choosing between two courses: one very structured with clear syllabus, one exploratory and open-ended. Which appeals more?', audience: 'students' },
   { dimension: 'S_N', text: 'When solving a problem, do you rely more on what has worked before, or on intuition about what might work?' },
   { dimension: 'S_N', text: 'Do you find yourself more interested in how things work in practice, or in the theory behind why they work?' },
   { dimension: 'S_N', text: 'Think of a recent decision — did you rely mainly on concrete facts and past data, or on a hunch/sense of where things were headed?' },
   // T / F
   { dimension: 'T_F', text: 'Two friends both want feedback on their work. One wants pure honesty, the other wants gentle encouragement. How do you handle giving feedback generally?' },
   { dimension: 'T_F', text: 'When making an important decision, do you rely more on logical analysis, or on how it will affect the people involved?' },
-  { dimension: 'T_F', text: 'A teammate makes a mistake that costs the group marks. How do you address it with them?' },
+  { dimension: 'T_F', text: 'A teammate makes a mistake that costs the group marks. How do you address it with them?', audience: 'students' },
   { dimension: 'T_F', text: 'You disagree with a friend about something factual. Do you push to establish who is correct, or prioritize keeping the conversation comfortable?' },
   { dimension: 'T_F', text: 'When resolving a conflict, do you focus first on being fair and consistent, or on how each person feels?' },
   { dimension: 'T_F', text: 'A group needs to cut one member from a project team for performance reasons. How would you approach that conversation?' },
@@ -87,16 +90,25 @@ const mbtiQuestions: { dimension: string; text: string }[] = [
   { dimension: 'T_F', text: 'In a debate or discussion, are you more energized by finding the most logical position, or by making sure everyone feels heard?' },
   { dimension: 'T_F', text: 'You have to choose between a fair-but-unpopular decision and a popular-but-inconsistent one. Which way do you lean?' },
   // J / P
-  { dimension: 'J_P', text: 'How far in advance do you usually plan for a big exam or deadline — weeks ahead, or closer to the date?' },
+  { dimension: 'J_P', text: 'How far in advance do you usually plan for a big exam or deadline — weeks ahead, or closer to the date?', audience: 'students' },
   { dimension: 'J_P', text: 'Your schedule for the week just got disrupted by something unplanned. How does that make you feel, and what do you do?' },
   { dimension: 'J_P', text: 'Do you prefer having a clear to-do list and sticking to it, or keeping options open and deciding as you go?' },
   { dimension: 'J_P', text: 'When packing for a trip, do you plan and pack days ahead, or do it last minute and adapt as needed?' },
   { dimension: 'J_P', text: 'A project has a flexible deadline. Do you finish early to have it done, or use the full time available?' },
   { dimension: 'J_P', text: 'How do you feel when plans change at the last minute — mildly annoyed and needing to re-plan, or easily adaptable?' },
-  { dimension: 'J_P', text: 'When starting a big assignment, do you outline the whole thing first, or dive in and figure it out as you go?' },
+  { dimension: 'J_P', text: 'When starting a big assignment, do you outline the whole thing first, or dive in and figure it out as you go?', audience: 'students' },
   { dimension: 'J_P', text: 'Do you like closing out decisions quickly once you have enough information, or keep exploring options as long as possible?' },
   { dimension: 'J_P', text: 'Describe your workspace or bag right now — organized and put together, or more of a flexible, evolving mix?' },
   { dimension: 'J_P', text: 'When given open-ended free time, do you usually make a plan for it, or let it unfold spontaneously?' },
+  // Workplace versions of the student-only questions above. Appended (not inserted) so existing
+  // question codes keep pointing at the same questions.
+  { dimension: 'E_I', text: 'In a team meeting, are you more likely to lead the discussion or contribute when directly asked?', audience: 'professionals' },
+  { dimension: 'S_N', text: 'You are reading a report at work. Do you focus more on the specific facts and figures, or on the underlying patterns and possibilities?', audience: 'professionals' },
+  { dimension: 'S_N', text: 'Your manager asks a hypothetical "what if" question with no clear answer. How do you feel about engaging with it?', audience: 'professionals' },
+  { dimension: 'S_N', text: 'You are choosing between two roles: one with clearly defined responsibilities, one open-ended where you shape the job. Which appeals more?', audience: 'professionals' },
+  { dimension: 'T_F', text: 'A colleague makes a mistake that delays a team deliverable. How do you address it with them?', audience: 'professionals' },
+  { dimension: 'J_P', text: 'How far in advance do you usually plan for a big work deadline — weeks ahead, or closer to the date?', audience: 'professionals' },
+  { dimension: 'J_P', text: 'When starting a big piece of work, do you outline the whole thing first, or dive in and figure it out as you go?', audience: 'professionals' },
 ];
 
 // ─────────────────────────── Careers ───────────────────────────
@@ -299,6 +311,8 @@ async function main() {
   // MBTI questions (Class 12 + College + Professional)
   qIndex = 1;
   for (const q of mbtiQuestions) {
+    const educationLevels =
+      q.audience === 'students' ? STUDENT_LEVELS : q.audience === 'professionals' ? (['WORKING_PROFESSIONAL'] as EducationLevel[]) : COLLEGE_PLUS;
     await prisma.question.upsert({
       where: { code: `MB-${String(qIndex).padStart(3, '0')}` },
       create: {
@@ -310,9 +324,11 @@ async function main() {
         isScenario: true,
         weight: 1,
         difficulty: 2,
-        educationLevels: COLLEGE_PLUS,
+        educationLevels,
       },
-      update: {},
+      // Keep existing databases in step with who each question is for (e.g. professionals must
+      // not get "costs the group marks"). Text and admin edits like isActive are left alone.
+      update: { educationLevels },
     });
     qIndex += 1;
   }

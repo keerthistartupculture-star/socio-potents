@@ -10,7 +10,7 @@ const items = [
   { title: 'Consent', desc: 'We explain exactly what data is collected and how AI is used before anything starts. Minors need guardian consent.', icon: ShieldCheck },
   { title: 'Talk to AI', desc: 'Answer situational questions in a natural chat. The AI asks natural follow-ups when your answer is interesting or ambiguous — no repeated questions.', icon: MessageSquare },
   { title: 'Personality scoring', desc: 'Your responses are scored using a structured, weighted algorithm — not just a single AI guess — with confidence levels shown, not absolute claims.', icon: Target },
-  { title: 'Career matching', desc: 'Personality is combined with your interests, skills, and goals to shortlist and rank career matches.', icon: Compass },
+  { title: 'Career matching', desc: 'Careers are shortlisted and ranked by how well your personality preferences fit them; your career goal, if you share one, is used in the explanations. Skills and knowledge are not tested.', icon: Compass },
   { title: 'Your report', desc: 'A detailed report with strengths, development areas, a career roadmap, and a 30/60/90-day action plan — downloadable as PDF.', icon: FileText },
 ];
 

@@ -148,7 +148,7 @@ export function ReportView({ report, reportId, pdfHref }: { report: ReportJson; 
         {/* At a glance infographic */}
         <div className="mt-6 grid gap-3 sm:grid-cols-3">
           <GlanceTile icon={Sparkles} label="Came through most clearly" value={strengths[0]?.label ?? '—'} />
-          <GlanceTile icon={BookOpen} label="Study ideas" value={studyHeadline} />
+          <GlanceTile icon={BookOpen} label={copy.studyLabel} value={studyHeadline} />
           <GlanceTile icon={Compass} label="Career area to explore first" value={areas[0]?.area ?? '—'} />
         </div>
 
@@ -204,7 +204,7 @@ export function ReportView({ report, reportId, pdfHref }: { report: ReportJson; 
         {/* Study ideas — preferences to try, not a fixed learning style */}
         <Card className="mt-6">
           <CardHeader>
-            <CardTitle>Study ideas to try</CardTitle>
+            <CardTitle>{copy.studyTitle}</CardTitle>
             <p className="text-xs text-muted-foreground">{STUDY_NOTE}</p>
           </CardHeader>
           <CardContent>

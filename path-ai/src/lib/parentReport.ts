@@ -306,6 +306,8 @@ export function audienceCopy(audience: ReportAudience, name: string) {
       return {
         kicker: 'A guide for parents',
         tipsTitle: `How you can help ${name} at home`,
+        studyLabel: 'Study ideas',
+        studyTitle: 'Study ideas to try',
         disclaimer:
           'This report is a guide for exploring strengths and career interests. It is not a medical or psychological diagnosis, and it should be used alongside conversations with teachers, counsellors and your child.',
       };
@@ -313,6 +315,9 @@ export function audienceCopy(audience: ReportAudience, name: string) {
       return {
         kicker: 'Strengths & career report',
         tipsTitle: 'Ways to put this into practice',
+        // "Study" reads as school to someone already working.
+        studyLabel: 'Learning ideas',
+        studyTitle: 'Learning ideas to try',
         disclaimer:
           'This report is a guide for reflecting on your work preferences and exploring career options. It is not a psychological diagnosis or an assessment of job performance, and works best alongside conversations with a mentor, manager or career counsellor.',
       };
@@ -320,6 +325,8 @@ export function audienceCopy(audience: ReportAudience, name: string) {
       return {
         kicker: 'Strengths & learning report',
         tipsTitle: `How family and friends can help ${name}`,
+        studyLabel: 'Study ideas',
+        studyTitle: 'Study ideas to try',
         disclaimer:
           'This report is a guide for exploring your strengths and career interests. It is not a medical or psychological diagnosis, and it works best alongside conversations with teachers, counsellors and family.',
       };
